@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import './custom.d.ts';
 
 function App() {
   type Lap = {
