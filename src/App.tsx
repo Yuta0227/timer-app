@@ -8,7 +8,7 @@ function App() {
   };
   const initialTime = 0;
   const [time, setTime] = useState(initialTime);
-  const timerRef = useRef<number | null>(null);
+  const timerRef = useRef<Timeout | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState<Lap[]>([]);
   const latestLap = useMemo(() => {
