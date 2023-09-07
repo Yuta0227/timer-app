@@ -4,5 +4,16 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(),VitePWA({registerType:'autoUpdate'})],
+  plugins: [
+    react(),
+    VitePWA({
+    includeAssets:[
+      'offline.html',
+      'robots.txt'
+    ],
+    registerType:'autoUpdate',
+    devOptions:{
+      enabled:true
+    }
+  })],
 });
