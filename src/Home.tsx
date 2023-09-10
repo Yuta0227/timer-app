@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "./components/auth/AuthProvider.tsx";
+import { useAuth } from "./components/auth/AuthProvider";
 function Home() {
   const { logout } = useAuth();
   const { user } = useAuth();
