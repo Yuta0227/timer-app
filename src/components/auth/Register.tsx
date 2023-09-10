@@ -4,15 +4,15 @@ import { Link } from "react-router-dom";
 import supabase from "../../supabase/client.tsx";
 
 const Register = () => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const confirmPasswordRef = useRef(null);
-  const nameRef = useRef(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [msg, setMsg] = useState("");
-  const [loading, setLoading] = useState(false);
+  const emailRef = useRef<HTMLInputElement|null>(null);
+  const passwordRef = useRef<HTMLInputElement|null>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement|null>(null);
+  const nameRef = useRef<HTMLInputElement|null>(null);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [msg, setMsg] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>):Promise<void> => {
     e.preventDefault();
     if (
       !passwordRef.current?.value ||
