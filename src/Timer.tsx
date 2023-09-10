@@ -105,7 +105,7 @@ function Timer() {
   };
   return (
     <>
-      <div>{user.email}</div>
+      <div>{!user?'未ログイン':user.email}</div>
       <div>{formatTime(time)}</div>
       <button onClick={isRunning ? stopTimer : startTimer}>
         {isRunning ? "停止" : "開始"}
