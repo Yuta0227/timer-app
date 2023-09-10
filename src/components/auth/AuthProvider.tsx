@@ -33,19 +33,27 @@ type MyComponentProps = {
 };
 const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   //ログイン時もログアウト時もセッションを更新する=>onauthchange発火
-  const login = async (email: string, password: string):Promise<void> =>{
-    try{
-      const response=await supabase.auth.signInWithPassword({ email, password });
-      if(response.error){
-        throw new Error((await response).error.message);
+  const login = async (email: string, password: string): Promise<void> => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        throw new Error("ログイン失敗");
       }
-    }catch(error){
+    } catch (error) {
       console.error(error);
       throw error;
     }
-  }
+  };
 
-  const logout = () => supabase.auth.signOut();
+  const logout = async (): Promise<void> => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw new Error("ログアウト失敗");
+    }
+  };
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>();
   useEffect(() => {
