@@ -4,14 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
 const Login = () => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [errorMsg, setErrorMsg] = useState("");
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string|null>("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setErrorMsg("");
@@ -20,12 +20,8 @@ const Login = () => {
         setErrorMsg("Please fill in the fields");
         return;
       }
-      const {
-        data: { user, session },
-        error
-      } = await login(emailRef.current.value, passwordRef.current.value);
-      if (error) setErrorMsg(error.message);
-      if (user && session) navigate("/");
+      await login(emailRef.current.value, passwordRef.current.value);
+      navigate("/");
     } catch (error) {
       setErrorMsg("Email or Password Incorrect");
     }
@@ -50,7 +46,8 @@ const Login = () => {
               <Alert
                 variant="danger"
                 onClose={() => setErrorMsg("")}
-                dismissible>
+                dismissible
+              >
                 {errorMsg}
               </Alert>
             )}
