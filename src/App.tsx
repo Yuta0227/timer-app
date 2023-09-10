@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-import './custom.d.ts';
-
+import "./custom.d.ts";
+import { Link } from "react-router-dom";
 function App() {
   type Lap = {
     name: string;
@@ -107,11 +107,10 @@ function App() {
         {isRunning ? "停止" : "開始"}
       </button>
       <button onClick={isRunning ? lapTimer : resetTimer}>
-        {time===initialTime ? "ラップ" : isRunning ? "ラップ" : "リセット"}
+        {time === initialTime ? "ラップ" : isRunning ? "ラップ" : "リセット"}
       </button>
-      <div>
-        {showLaps()}
-      </div>
+      <div>{showLaps()}</div>
+      <Link to="/">戻る</Link>
     </>
   );
 }

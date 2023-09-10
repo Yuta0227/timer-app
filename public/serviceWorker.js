@@ -22,15 +22,15 @@ self.addEventListener('fetch', (event) => {
 
 // Activate the SW
 self.addEventListener('activate', (event) => {
-  const casheWhitelist = [];
-  casheWhitelist.push(CACHE_NAME);
+  const cacheWhitelist = [];
+  cacheWhitelist.push(CACHE_NAME);
 
   event.waitUntil(
-    caches.keys().then((casheNames) =>
+    caches.keys().then((cacheNames) =>
       Promise.all(
-        casheNames.map((casheName) => {
-          if (!casheWhitelist.includes(casheName)) {
-            return cashes.delete(casheName);
+        cacheNames.map((cacheName) => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
           }
         })
       )
