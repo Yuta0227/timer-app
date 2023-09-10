@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
 import { Link } from "react-router-dom";
-function App() {
+function Timer() {
   type Lap = {
     name: string;
     startTime: number;
@@ -115,4 +115,4 @@ function App() {
   );
 }
 
-export default App;
+export default Timer;
