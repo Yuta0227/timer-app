@@ -4,13 +4,13 @@ import supabase from "../../supabase/client.tsx";
 const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
-//ログイン時もログアウト時もセッションを更新する=>onauthchange発火
-const login = (email, password) =>
-  supabase.auth.signInWithPassword({ email, password });
-
-const logout = () => supabase.auth.signOut();
 
 const AuthProvider = ({ children }) => {
+  //ログイン時もログアウト時もセッションを更新する=>onauthchange発火
+  const login = (email, password) =>
+    supabase.auth.signInWithPassword({ email, password });
+  
+  const logout = () => supabase.auth.signOut();
   const [user, setUser] = useState(null);
   const [session, setSession] = useState();
   useEffect(() => {
