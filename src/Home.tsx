@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 function Home() {
-  const { logout } = useAuth();
-  const { user } = useAuth();
+  const { logout,user } = useAuth();
   const handleLogout=async()=>{
     await logout();
   }
