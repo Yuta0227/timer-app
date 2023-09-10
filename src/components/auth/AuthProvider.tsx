@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import supabase from "../../supabase/client.tsx";
 import { Session } from "@supabase/supabase-js";
 
@@ -22,10 +28,22 @@ export const useAuth = () => {
   }
   return context;
 };
-const AuthProvider: React.FC = ({ children }) => {
+type MyComponentProps = {
+  children: ReactNode;
+};
+const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   //ログイン時もログアウト時もセッションを更新する=>onauthchange発火
-  const login = (email, password) =>
-    supabase.auth.signInWithPassword({ email, password });
+  const login = async (email: string, password: string):Promise<void> =>{
+    try{
+      const response=await supabase.auth.signInWithPassword({ email, password });
+      if(response.error){
+        throw new Error((await response).error.message);
+      }
+    }catch(error){
+      console.error(error);
+      throw error;
+    }
+  }
 
   const logout = () => supabase.auth.signOut();
   const [user, setUser] = useState<User | null>(null);
@@ -62,9 +80,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user: user as any, login: login as any, logout: logout as any }}
-    >
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
