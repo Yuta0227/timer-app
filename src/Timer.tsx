@@ -1,7 +1,10 @@
 import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
 import { Link } from "react-router-dom";
+import { useAuth } from "./components/auth/AuthProvider.tsx";
+
 function Timer() {
+  const { user } = useAuth();
   type Lap = {
     name: string;
     startTime: number;
@@ -102,6 +105,7 @@ function Timer() {
   };
   return (
     <>
+      <div>{user.email}</div>
       <div>{formatTime(time)}</div>
       <button onClick={isRunning ? stopTimer : startTimer}>
         {isRunning ? "停止" : "開始"}

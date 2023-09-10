@@ -1,28 +1,22 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import supabase from "./supabase/client.tsx";
-import Logout from './components/auth/Logout.tsx';
+import { useAuth } from "./components/auth/AuthProvider.tsx";
 function Home() {
-  const [session, setSession] = useState(null);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  const { logout } = useAuth();
+  const { user } = useAuth();
+  const handleLogout=async()=>{
+    await logout();
+  }
   const loginDom = () => {
-    if (session) {
+    if (user) {
       return (
         <>
           <div>
-            you are logged in and your email address is {session.user.email}
+            you are logged in and your email address is {user.email}
           </div>
-          <Logout/>
+          <div>
+            username is {user.name}
+          </div>
+          <button onClick={handleLogout}>ログアウト</button>
         </>
       );
     } else {
