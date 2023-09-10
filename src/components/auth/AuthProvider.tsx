@@ -1,11 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import supabase from "../../supabase/client.tsx";
 
-const AuthContext = createContext({});
+type User={
+  email:string;
+  name:string;
+}
+
+type AuthContextType={
+  user:User|null;
+  login:(email:string,password:string)=>Promise<void>;
+  logout:()=>Promise<void>
+}
+
+const AuthContext = createContext<AuthContextType|undefined>(undefined);
 
 export const useAuth = () => useContext(AuthContext);
 
-const AuthProvider = ({ children }) => {
+const AuthProvider:React.FC = ({ children }) => {
   //ログイン時もログアウト時もセッションを更新する=>onauthchange発火
   const login = (email, password) =>
     supabase.auth.signInWithPassword({ email, password });
@@ -45,7 +56,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user:user as any, login:login as any, logout:logout as any }}>
       {children}
     </AuthContext.Provider>
   );

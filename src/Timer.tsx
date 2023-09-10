@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
 import { Link } from "react-router-dom";
-import { useAuth } from "./components/auth/AuthProvider.tsx";
+import { useAuth } from "./components/auth/AuthProvider";
 
 function Timer() {
   const { user } = useAuth();
