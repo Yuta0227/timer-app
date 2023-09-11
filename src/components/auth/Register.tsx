@@ -29,22 +29,11 @@ const Register = () => {
     }
     try {
       setErrorMsg("");
-      setLoading(true);    
-      const { data, error } = await supabase
-        .from("users")
-        .insert([
-          {
-            name: nameRef.current.value,
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-          },
-        ])
-        .select();
-      if (!error && data) {
-        setMsg(
-          "Registration Successful. Check your email to confirm your account"
-        );
-      }
+      setLoading(true);
+      supabase.auth.signUp({
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
     } catch (error) {
       setErrorMsg("Error in Creating Account");
     }
