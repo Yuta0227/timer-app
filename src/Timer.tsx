@@ -1,10 +1,11 @@
 import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 import supabase from "./supabase/client";
 
 function Timer() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   type Lap = {
     name: string;
@@ -120,7 +121,7 @@ function Timer() {
     if(!user){
       alert('ログインしてください')
       //ログインページに飛ばす
-      window.location.href='/login'
+      navigate('/login')
     }
   }
   return (
