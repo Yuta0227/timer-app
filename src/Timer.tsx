@@ -145,7 +145,7 @@ function Timer() {
       {time!==initialTime?<button onClick={postPublicTime}>公開記録を登録する</button>:''}
       {time!==initialTime?<button onClick={postPrivateTime}>非公開記録を登録する</button>:''}
       <div>{showLaps()}</div>
-      <Link to="/">戻る</Link>
+      <Link to="/" state={{ from:'/timer' }}>戻る</Link>
     </>
   );
 }

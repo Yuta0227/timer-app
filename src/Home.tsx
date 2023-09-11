@@ -1,20 +1,16 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 function Home() {
-  const { logout,user } = useAuth();
-  const handleLogout=async()=>{
+  const { logout, user } = useAuth();
+  const handleLogout = async () => {
     await logout();
-  }
+  };
   const loginDom = () => {
     if (user) {
       return (
         <>
-          <div>
-            you are logged in and your email address is {user.email}
-          </div>
-          <div>
-            username is {user.name}
-          </div>
+          <div>you are logged in and your email address is {user.email}</div>
+          <div>username is {user.name}</div>
           <button onClick={handleLogout}>ログアウト</button>
         </>
       );
@@ -22,10 +18,14 @@ function Home() {
       return (
         <div>
           <div>
-            <Link to="register">登録</Link>
+            <Link to="register" state={{ from: "/" }}>
+              登録
+            </Link>
           </div>
           <div>
-            <Link to="login">ログイン</Link>
+            <Link to="login" state={{ from: "/" }}>
+              ログイン
+            </Link>
           </div>
         </div>
       );
@@ -36,10 +36,14 @@ function Home() {
       <h1>Home</h1>
       {loginDom()}
       <div>
-        <Link to="timer">タイマー</Link>
+        <Link to="timer" state={{ from: "/" }}>
+          タイマー
+        </Link>
       </div>
       <div>
-        <Link to="ranking">ランキング</Link>
+        <Link to="ranking" state={{ from: "/" }}>
+          ランキング
+        </Link>
       </div>
     </>
   );

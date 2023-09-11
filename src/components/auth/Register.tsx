@@ -96,7 +96,7 @@ const Register = () => {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Already a User? <Link to={"/login"}>Login</Link>
+        Already a User? <Link to={"/login"} state={{from:'/register'}}>Login</Link>
       </div>
     </>
   );

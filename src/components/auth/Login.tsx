@@ -1,17 +1,18 @@
 import { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
 const Login = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string|null>("");
+  const [errorMsg, setErrorMsg] = useState<string | null>("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setErrorMsg("");
@@ -21,7 +22,14 @@ const Login = () => {
         return;
       }
       await login(emailRef.current.value, passwordRef.current.value);
-      navigate(-1);
+      //ログイン後の遷移先を指定
+      if (location.state.from !== "/register") {
+        navigate(-1);
+        return;
+      } else {
+        navigate("/");
+        return;
+      }
     } catch (error) {
       setErrorMsg("Email or Password Incorrect");
     }
@@ -59,7 +67,10 @@ const Login = () => {
           </Form>
         </Card.Body>
         <div className="w-100 text-center mt-2">
-          New User? <Link to={"/register"}>Register</Link>
+          New User?{" "}
+          <Link to={"/register"} state={{ from: "/login" }}>
+            Register
+          </Link>
         </div>
       </Card>
     </>
