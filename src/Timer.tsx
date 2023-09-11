@@ -112,7 +112,7 @@ function Timer() {
     }).then(()=>{
       stopTimer()
       resetTimer()
-      alert('公開記録を登録しました')
+      alert('公開記録を登録した')
     })
   }
   const postPrivateTime = async () => {
