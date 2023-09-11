@@ -6,9 +6,9 @@ import {
   ReactNode,
 } from "react";
 import supabase from "../../supabase/client.tsx";
-import { Session } from "@supabase/supabase-js";
 
 type User = {
+  id: string;
   email: string;
   name: string;
 };
@@ -55,7 +55,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     }
   };
   const [user, setUser] = useState<User | null>(null);
-  const fetchUser = async (email:string|undefined) => {
+  const fetchUser = async (email: string | undefined) => {
     const { data: user } = await supabase
       .from("users")
       .select("*")
@@ -78,13 +78,13 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     };
   }, []);
   //レンダー毎にセッションを取得する
-  const setSessionToUser=async()=>{
-    const {data}= await supabase.auth.getSession();
+  const setSessionToUser = async () => {
+    const { data } = await supabase.auth.getSession();
     //セッションがあったらユーザー情報を取得
-    if(data.session){
+    if (data.session) {
       fetchUser(data.session.user.email);
     }
-  }
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
