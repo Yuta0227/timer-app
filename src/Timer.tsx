@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
 import { Link } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
+import supabase from "./supabase/client";
 
 function Timer() {
   const { user } = useAuth();
@@ -103,6 +104,25 @@ function Timer() {
       );
     }
   };
+  const postPublicTime = async () => {
+    checkLogin()
+    await supabase.from("records").insert({
+      user_id:user?.id,time:time,is_public:true
+    })
+  }
+  const postPrivateTime = async () => {
+    checkLogin()
+    await supabase.from("records").insert({
+      user_id:user?.id,time:time,is_public:false
+    })
+  }
+  const checkLogin=()=>{
+    if(!user){
+      alert('ログインしてください')
+      //ログインページに飛ばす
+      window.location.href='/login'
+    }
+  }
   return (
     <>
       <div>{!user?'未ログイン':user.email}</div>
@@ -113,6 +133,8 @@ function Timer() {
       <button onClick={isRunning ? lapTimer : resetTimer}>
         {time === initialTime ? "ラップ" : isRunning ? "ラップ" : "リセット"}
       </button>
+      {isRunning?null:<button onClick={postPublicTime}>公開記録を登録する</button>}
+      {isRunning?null:<button onClick={postPrivateTime}>非公開記録を登録する</button>}
       <div>{showLaps()}</div>
       <Link to="/">戻る</Link>
     </>
