@@ -55,37 +55,36 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     }
   };
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>();
-  useEffect(() => {
-    //ログイン経由でセッション更新なら
-    if (session) {
-      const fetchUser = async () => {
-        const { data: user } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", session.user.email)
-          .single();
-        setUser(user);
-      };
-      fetchUser();
-      //ログアウト経由でセッション更新なら
-    } else {
-      setUser(null);
-    }
-  }, [session]);
-  //ログインするとセッションが更新される
+  const fetchUser = async (email:string|undefined) => {
+    const { data: user } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+    setUser(user);
+  };
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        setSession(session);
+        //set session
+        fetchUser(session?.user.email);
       } else {
-        setSession(null);
+        setUser(null);
       }
     });
+    setSessionToUser();
     return () => {
       data.subscription.unsubscribe();
     };
   }, []);
+  //レンダー毎にセッションを取得する
+  const setSessionToUser=async()=>{
+    const {data}= await supabase.auth.getSession();
+    //セッションがあったらユーザー情報を取得
+    if(data.session){
+      fetchUser(data.session.user.email);
+    }
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
