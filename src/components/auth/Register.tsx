@@ -4,15 +4,17 @@ import { Link } from "react-router-dom";
 import supabase from "../../supabase/client.tsx";
 
 const Register = () => {
-  const emailRef = useRef<HTMLInputElement|null>(null);
-  const passwordRef = useRef<HTMLInputElement|null>(null);
-  const confirmPasswordRef = useRef<HTMLInputElement|null>(null);
-  const nameRef = useRef<HTMLInputElement|null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [msg, setMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>):Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (
       !passwordRef.current?.value ||
@@ -27,16 +29,18 @@ const Register = () => {
       setErrorMsg("Passwords doesn't match");
       return;
     }
-    try {
-      setErrorMsg("");
-      setLoading(true);
-      supabase.auth.signUp({
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-    } catch (error) {
-      setErrorMsg("Error in Creating Account");
-    }
+    setErrorMsg("");
+    setLoading(true);
+    supabase.auth.signUp({
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    }).then((res) => {
+      if (res.error) {
+        setErrorMsg(res.error.message);
+        return;
+      }
+      setMsg("Please check your email for confirmation");
+    });
     setLoading(false);
   };
 
@@ -85,7 +89,10 @@ const Register = () => {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Already a User? <Link to={"/login"} state={{from:'/register'}}>Login</Link>
+        Already a User?{" "}
+        <Link to={"/login"} state={{ from: "/register" }}>
+          Login
+        </Link>
       </div>
     </>
   );
