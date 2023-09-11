@@ -35,11 +35,12 @@ const Register = () => {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     }).then((res) => {
-      if (res.error) {
-        setErrorMsg(res.error.message);
-        return;
-      }
+      console.log(res.data)
+      console.log(res.error)
       setMsg("Please check your email for confirmation");
+    }).catch((err)=>{
+      console.log(err);
+      setErrorMsg(err);
     });
     setLoading(false);
   };
