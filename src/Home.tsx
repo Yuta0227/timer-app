@@ -9,8 +9,7 @@ function Home() {
     if (user) {
       return (
         <>
-          <div>you are logged in and your email address is {user.email}</div>
-          <div>username is {user.name}</div>
+          <div>you are logged in and your email address is {user.user?.email}</div>
           <button onClick={handleLogout}>ログアウト</button>
         </>
       );

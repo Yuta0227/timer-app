@@ -1,16 +1,16 @@
 import { useRef, useState } from "react";
 import { Alert, Button, Card, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import supabase from "../../supabase/client.tsx";
 
 const Register = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const confirmPasswordRef = useRef<HTMLInputElement | null>(null);
-  const nameRef = useRef<HTMLInputElement | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [msg, setMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate=useNavigate();
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -19,8 +19,7 @@ const Register = () => {
     if (
       !passwordRef.current?.value ||
       !emailRef.current?.value ||
-      !confirmPasswordRef.current?.value ||
-      !nameRef.current?.value
+      !confirmPasswordRef.current?.value
     ) {
       setErrorMsg("Please fill all the fields");
       return;
@@ -29,7 +28,7 @@ const Register = () => {
       setErrorMsg("Passwords doesn't match");
       return;
     }
-    setErrorMsg("");
+    setErrorMsg("/login");
     setLoading(true);
     supabase.auth.signUp({
       email: emailRef.current.value,
@@ -37,6 +36,7 @@ const Register = () => {
     }).then((res) => {
       console.log(res.data)
       console.log(res.error)
+      navigate("/");
       setMsg("Please check your email for confirmation");
     }).catch((err)=>{
       console.log(err);
@@ -51,10 +51,6 @@ const Register = () => {
         <Card.Body>
           <h2 className="text-center mb-4">Register</h2>
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="name">
-              <Form.Label>Name</Form.Label>
-              <Form.Control type="text" ref={nameRef} required />
-            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />

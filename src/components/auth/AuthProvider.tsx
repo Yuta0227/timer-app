@@ -10,11 +10,14 @@ import supabase from "../../supabase/client.tsx";
 type User = {
   id: string;
   email: string;
-  name: string;
 };
-
+type Profile = {
+  name: string;
+  description: string;
+};
 type AuthContextType = {
   user: User | null;
+  profile: Profile | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -55,39 +58,59 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     }
   };
   const [user, setUser] = useState<User | null>(null);
-  const fetchUser = async (email: string | undefined) => {
-    const { data: user } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .single();
-    setUser(user);
-  };
+  const [profile, setProfile] = useState<Profile | null>(null);
+  //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
-        //set session
-        fetchUser(session?.user.email);
-      } else {
-        setUser(null);
+        try {
+          getUser();
+        } catch (error) {
+          console.error(error);
+        }
       }
     });
-    setSessionToUser();
+    const session = supabase.auth.getSession();
+    console.log(session);
     return () => {
       data.subscription.unsubscribe();
     };
   }, []);
-  //レンダー毎にセッションを取得する
-  const setSessionToUser = async () => {
-    const { data } = await supabase.auth.getSession();
-    //セッションがあったらユーザー情報を取得
-    if (data.session) {
-      fetchUser(data.session.user.email);
+  const getUser = async () => {
+    try {
+      const response = await supabase.auth.getUser();
+      if (response.error) {
+        console.log(response.error);
+        return;
+      }
+      const userData = response.data?.user || {};
+      const id = userData.id || "";
+      const email = userData.email || "";
+      setUser({ id:id, email:email });
+      getProfile(id);
+    } catch (error) {
+      console.error(error);
     }
   };
-
+  const getProfile = async (userId: string) => {
+    try {
+      const response = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .single();
+      if (response.error) {
+        console.log(response.error);
+        return;
+      }
+      console.log(response.data);
+      // setProfile(res.data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
