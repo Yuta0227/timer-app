@@ -109,12 +109,20 @@ function Timer() {
     checkLogin()
     await supabase.from("records").insert({
       user_id:user?.id,time:time,is_public:true
+    }).then(()=>{
+      stopTimer()
+      resetTimer()
+      alert('公開記録を登録しました')
     })
   }
   const postPrivateTime = async () => {
     checkLogin()
     await supabase.from("records").insert({
       user_id:user?.id,time:time,is_public:false
+    }).then(()=>{
+      stopTimer()
+      resetTimer()
+      alert('非公開記録を登録しました')
     })
   }
   const checkLogin=()=>{
@@ -134,8 +142,8 @@ function Timer() {
       <button onClick={isRunning ? lapTimer : resetTimer}>
         {time === initialTime ? "ラップ" : isRunning ? "ラップ" : "リセット"}
       </button>
-      {isRunning?null:<button onClick={postPublicTime}>公開記録を登録する</button>}
-      {isRunning?null:<button onClick={postPrivateTime}>非公開記録を登録する</button>}
+      {time!==initialTime?<button onClick={postPublicTime}>公開記録を登録する</button>:''}
+      {time!==initialTime?<button onClick={postPrivateTime}>非公開記録を登録する</button>:''}
       <div>{showLaps()}</div>
       <Link to="/">戻る</Link>
     </>
