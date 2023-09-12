@@ -35,14 +35,17 @@ const Register = () => {
       password: passwordRef.current.value,
     }).then((res) => {
       console.log(res.data)
-      console.log(res.error)
-      insertEmptyProfile(res.data?.user?.id)
-      navigate("/");
-      // setMsg("Please check your email for confirmation");
-    }).catch((err)=>{
-      console.log(err);
-      setErrorMsg(err);
-    });
+      if(res.error){
+        console.log(res.error.message)
+        setErrorMsg(res.error.message);
+        setLoading(false);
+        return;
+      }else{
+        insertEmptyProfile(res.data?.user?.id)
+        navigate("/");
+        setMsg("Registration Successful");
+      }
+    })
     setLoading(false);
   };
   const insertEmptyProfile=async(userId:string|undefined)=>{
