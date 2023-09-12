@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 import supabase from "./supabase/client";
 
@@ -106,35 +106,42 @@ function Timer() {
     }
   };
   const postPublicTime = async () => {
-    checkLogin()
-    await supabase.from("records").insert({
-      user_id:user?.id,time:time,is_public:true
-    }).then(()=>{
-      stopTimer()
-      resetTimer()
-      alert('公開記録を登録した')
-    })
-  }
-  const postPrivateTime = async () => {
-    checkLogin()
-    await supabase.from("records").insert({
-      user_id:user?.id,time:time,is_public:false
-    }).then(()=>{
-      stopTimer()
-      resetTimer()
-      alert('非公開記録を登録しました')
-    })
-  }
-  const checkLogin=()=>{
-    if(!user){
-      alert('ログインしてください')
-      //ログインページに飛ばす
-      navigate('/login')
+    if(user){
+      await supabase.from("records").insert({
+        user_id: user.id,
+        time: time,
+        is_public: true,
+      });
+      stopTimer();
+      resetTimer();
+      alert("公開記録を登録した");
+    }else{
+      alert("ログインしてください")
+      navigate("/login", { state: { from: "/timer" } });
     }
-  }
+  };
+  const postPrivateTime = async () => {
+    if(user){
+      await supabase
+      .from("records")
+      .insert({
+        user_id: user.id,
+        time: time,
+        is_public: false,
+      })
+      .then(() => {
+        stopTimer();
+        resetTimer();
+        alert("非公開記録を登録しました");
+      });
+    }else{
+      alert("ログインしてください")
+      navigate("/login", { state: { from: "/timer" } });
+    }
+  };
   return (
     <>
-      <div>{!user?'未ログイン':user.email}</div>
+      <div>{!user ? "未ログイン" : user.email}</div>
       <div>{formatTime(time)}</div>
       <button onClick={isRunning ? stopTimer : startTimer}>
         {isRunning ? "停止" : "開始"}
@@ -142,10 +149,20 @@ function Timer() {
       <button onClick={isRunning ? lapTimer : resetTimer}>
         {time === initialTime ? "ラップ" : isRunning ? "ラップ" : "リセット"}
       </button>
-      {time!==initialTime?<button onClick={postPublicTime}>公開記録を登録する</button>:''}
-      {time!==initialTime?<button onClick={postPrivateTime}>非公開記録を登録する</button>:''}
+      {time !== initialTime ? (
+        <button onClick={postPublicTime}>公開記録を登録する</button>
+      ) : (
+        ""
+      )}
+      {time !== initialTime ? (
+        <button onClick={postPrivateTime}>非公開記録を登録する</button>
+      ) : (
+        ""
+      )}
       <div>{showLaps()}</div>
-      <Link to="/" state={{ from:'/timer' }}>戻る</Link>
+      <Link to="/" state={{ from: "/timer" }}>
+        戻る
+      </Link>
     </>
   );
 }
