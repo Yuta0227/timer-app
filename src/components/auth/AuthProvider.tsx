@@ -81,12 +81,10 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       if (response.error) {
         console.log(response.error);
         return;
+      } else if (response.data.user.id && response.data.user.email) {
+        setUser({ id: response.data.user.id, email: response.data.user.email });
+        getProfile(response.data.user.id);
       }
-      const userData = response.data?.user || {};
-      const id = userData.id || "";
-      const email = userData.email || "";
-      setUser({ id: id, email: email });
-      getProfile(id);
     } catch (error) {
       console.error(error);
     }
