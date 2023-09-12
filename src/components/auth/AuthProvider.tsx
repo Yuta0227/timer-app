@@ -85,7 +85,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       const userData = response.data?.user || {};
       const id = userData.id || "";
       const email = userData.email || "";
-      setUser({ id:id, email:email });
+      setUser({ id: id, email: email });
       getProfile(id);
     } catch (error) {
       console.error(error);
@@ -102,26 +102,27 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         console.log(response.error);
         return;
       }
-      setProfile({name:response.data.name,description:response.data.description})
+      setProfile({
+        name: response.data.name,
+        description: response.data.description,
+      });
     } catch (error) {
       console.error(error);
     }
   };
-  const retrieveSession=async()=>{
-    try{
-      const response=await supabase.auth.getSession();
-      if(response.error){
-        console.log(response.error)
-        return
-      }else{
-        if(response.data.session){
-          getProfile(response.data.session.user.id)
-        }
+  const retrieveSession = async () => {
+    try {
+      const response = await supabase.auth.getSession();
+      if (response.error) {
+        console.log(response.error);
+        return;
+      } else if (response.data.session) {
+        getUser();
       }
-    }catch(error){
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
