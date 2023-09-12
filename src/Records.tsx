@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
 import supabase from "./supabase/client";
+import { formatTime } from "./components/TimeUtils";
+
 //後々他のカラムを使う際にタイプ指定する必要あり
 type Record = {
   id: number;
   time: number;
 };
-function Ranking() {
-  const [ranking, setRanking] = useState<Record[]>([]);
+function Records() {
+  const [records, setRecords] = useState<Record[]>([]);
   useEffect(() => {
-    getRanking();
+    getRecords();
   }, []);
-  const getRanking = async () => {
+  const getRecords = async () => {
     const { data, error } = await supabase.from("records").select("*");
     if (error) {
       console.log(error);
     } else {
-      setRanking(data);
+      setRecords(data);
     }
   };
   return (
     <div>
-      <div>ランキング</div>
-      <div>{ranking.map((record) => (
-          <div key={record.id}>{record.id}: {record.time}</div>
+      <div>記録一覧</div>
+      <div>{records.map((record) => (
+          <div key={record.id}>{record.id}: {formatTime(record.time)}</div>
         ))}</div>
     </div>
   );
 }
-export default Ranking;
+export default Records;

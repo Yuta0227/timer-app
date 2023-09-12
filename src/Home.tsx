@@ -42,8 +42,8 @@ function Home() {
         </Link>
       </div>
       <div>
-        <Link to="ranking" state={{ from: "/" }}>
-          ランキング
+        <Link to="records" state={{ from: "/" }}>
+          記録一覧
         </Link>
       </div>
     </>
