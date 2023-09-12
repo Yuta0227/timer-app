@@ -7,7 +7,7 @@ import { formatTime } from "./components/TimeUtils";
 
 function Timer() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user,profile } = useAuth();
   type Lap = {
     name: string;
     startTime: number;
@@ -123,6 +123,7 @@ function Timer() {
   return (
     <>
       <div>{!user ? "未ログイン" : user.email}</div>
+      <div>{!profile ? "未ログイン" : profile.name}</div>
       <div>{formatTime(time)}</div>
       <button onClick={isRunning ? stopTimer : startTimer}>
         {isRunning ? "停止" : "開始"}

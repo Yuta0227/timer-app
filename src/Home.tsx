@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./components/AuthProvider";
 function Home() {
-  const { logout, user,profile } = useAuth();
+  const { logout, user, profile } = useAuth();
   const handleLogout = async () => {
     await logout();
   };
@@ -13,6 +13,11 @@ function Home() {
           <div>username:{profile?.name}</div>
           <div>description:{profile?.description}</div>
           <button onClick={handleLogout}>ログアウト</button>
+          <div>
+            <Link to="profile" state={{ from: "/" }}>
+              プロフィール
+            </Link>
+          </div>
         </>
       );
     } else {

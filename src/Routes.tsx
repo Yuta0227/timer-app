@@ -5,6 +5,7 @@ import Timer from './Timer';
 import Records from './Records';
 import Register from './components/Register';
 import Login from './components/Login';
+import Profile from './Profile';
 // Import other components for your routes
 export const RouterConfig:React.VFC=()=>{
     return (
@@ -15,6 +16,7 @@ export const RouterConfig:React.VFC=()=>{
                 <Route path="records" element={<Records/>}/>
                 <Route path="register" element={<Register/>}/>
                 <Route path="login" element={<Login/>}/>
+                <Route path="profile" element={<Profile/>}/>
                 {/* Add more routes here */}
             </Routes>
         </Router>
