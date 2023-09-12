@@ -70,8 +70,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         }
       }
     });
-    const session = supabase.auth.getSession();
-    console.log(session);
+    retrieveSession();
     return () => {
       data.subscription.unsubscribe();
     };
@@ -103,12 +102,26 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         console.log(response.error);
         return;
       }
-      console.log(response.data);
       setProfile({name:response.data.name,description:response.data.description})
     } catch (error) {
       console.error(error);
     }
   };
+  const retrieveSession=async()=>{
+    try{
+      const response=await supabase.auth.getSession();
+      if(response.error){
+        console.log(response.error)
+        return
+      }else{
+        if(response.data.session){
+          getProfile(response.data.session.user.id)
+        }
+      }
+    }catch(error){
+      console.error(error)
+    }
+  }
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
