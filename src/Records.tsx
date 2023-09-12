@@ -15,6 +15,7 @@ function Records() {
   const [records, setRecords] = useState<Record[]>([]);
   useEffect(() => {
     getRecords();
+    console.log('yes');
   }, [user]);
   const getRecords = async () => {
     const { data, error } = await supabase
