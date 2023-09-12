@@ -104,7 +104,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         return;
       }
       console.log(response.data);
-      // setProfile(res.data)
+      setProfile({name:response.data.name,description:response.data.description})
     } catch (error) {
       console.error(error);
     }

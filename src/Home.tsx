@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 function Home() {
-  const { logout, user } = useAuth();
+  const { logout, user,profile } = useAuth();
   const handleLogout = async () => {
     await logout();
   };
@@ -10,6 +10,8 @@ function Home() {
       return (
         <>
           <div>you are logged in and your email address is {user.email}</div>
+          <div>username:{profile?.name}</div>
+          <div>description:{profile?.description}</div>
           <button onClick={handleLogout}>ログアウト</button>
         </>
       );
