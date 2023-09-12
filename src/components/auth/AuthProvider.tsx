@@ -55,6 +55,10 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       throw new Error("ログアウト失敗");
+    }else{
+      setUser(null);
+      setProfile(null);
+      window.location.reload();
     }
   };
   const [user, setUser] = useState<User | null>(null);
