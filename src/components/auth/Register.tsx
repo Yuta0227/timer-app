@@ -36,15 +36,23 @@ const Register = () => {
     }).then((res) => {
       console.log(res.data)
       console.log(res.error)
+      insertEmptyProfile(res.data?.user?.id)
       navigate("/");
-      setMsg("Please check your email for confirmation");
+      // setMsg("Please check your email for confirmation");
     }).catch((err)=>{
       console.log(err);
       setErrorMsg(err);
     });
     setLoading(false);
   };
-
+  const insertEmptyProfile=async(userId:string|undefined)=>{
+    const { data, error } = await supabase.from("profiles").insert([{ "user_id": userId }]);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    console.log(data);
+  }
   return (
     <>
       <Card>
