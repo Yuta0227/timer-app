@@ -42,7 +42,6 @@ function Records() {
         {records.map((record) => (
           <div key={record.id}>
             <span style={{ color: record.isOwner ? "red" : "black" }}>
-              ID:{record.id}
               名前:{record.name}
               時間: {formatTime(record.time)}
             </span>
