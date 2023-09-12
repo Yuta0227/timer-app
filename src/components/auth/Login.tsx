@@ -31,6 +31,7 @@ const Login = () => {
         return;
       }
     } catch (error) {
+      console.log(error)
       setErrorMsg("Email or Password Incorrect");
     }
     setLoading(false);
