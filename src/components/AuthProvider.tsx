@@ -5,7 +5,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import supabase from "../../supabase/client.tsx";
+import supabase from "../supabase/client.tsx";
 
 type User = {
   id: string;

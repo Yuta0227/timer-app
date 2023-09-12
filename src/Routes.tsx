@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import Timer from './Timer';
 import Records from './Records';
-import Register from './components/auth/Register';
-import Login from './components/auth/Login';
+import Register from './components/Register';
+import Login from './components/Login';
 // Import other components for your routes
 export const RouterConfig:React.VFC=()=>{
     return (

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "./components/auth/AuthProvider";
+import { useAuth } from "./components/AuthProvider";
 function Home() {
   const { logout, user,profile } = useAuth();
   const handleLogout = async () => {
