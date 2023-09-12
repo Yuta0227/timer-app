@@ -3,6 +3,7 @@ import "./custom.d.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./components/auth/AuthProvider";
 import supabase from "./supabase/client";
+import { formatTime } from "./components/TimeUtils";
 
 function Timer() {
   const navigate = useNavigate();
@@ -34,26 +35,6 @@ function Timer() {
       };
     }
   }, [laps, time]);
-  const formatTime = (time: number) => {
-    const intHour = Math.floor(time / 1000 / 60 / 60);
-    const formattedHour = intHour < 10 ? `0${intHour}` : `${intHour}`;
-    const intMinute = Math.floor(time / 1000 / 60) % 60;
-    const formattedMinute = intMinute < 10 ? `0${intMinute}` : `${intMinute}`;
-    const intSecond = Math.floor(time / 1000) % 60;
-    const formattedSecond = intSecond < 10 ? `0${intSecond}` : `${intSecond}`;
-    const intMilisecond = Math.floor(time / 10) % 100;
-    const formattedMilisecond =
-      intMilisecond < 10 ? `0${intMilisecond}` : `${intMilisecond}`;
-    return (
-      formattedHour +
-      ":" +
-      formattedMinute +
-      ":" +
-      formattedSecond +
-      "." +
-      formattedMilisecond
-    );
-  };
   const lapList = laps.map((lap, index) => {
     const lapTime =
       lap.endTime !== null ? lap.endTime - lap.startTime : time - lap.startTime;
