@@ -74,6 +74,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         } catch (error) {
           console.error(error);
         }
+      }else{
+        OneSignal.logout();
       }
     });
     retrieveSession();
