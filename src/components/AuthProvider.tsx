@@ -197,6 +197,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         console.log(response)
+        setErrors([response.errors,...errors])
         setNotification(response.id)
       })
       .catch((err) => console.error(err));
