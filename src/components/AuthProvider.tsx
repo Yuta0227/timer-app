@@ -66,7 +66,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   const [oneSignalInitialized, setOneSignalInitialized] =
     useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>(['1']);
   //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
@@ -99,7 +99,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
-  const initializeOneSignal = async (user_id:string) => {
+  const initializeOneSignal = async (user_id: string) => {
     if (oneSignalInitialized) {
       console.log("yes");
       return;
@@ -119,61 +119,72 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
     });
-    addUserToOneSignal(user_id)
+    addUserToOneSignal(user_id);
 
     OneSignal.Slidedown.promptPush();
   };
-  const addUserToOneSignal=async(user_id:string)=>{
+  const addUserToOneSignal = async (user_id: string) => {
     const options = {
-      method: 'POST',
-      headers: {accept: 'application/json', 'content-type': 'application/json'},
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+      },
       body: JSON.stringify({
         properties: {
           // tags: {key: 'value', foo: 'bar'},
-          language: 'ja',
-          timezone_id: 'Asia/Tokyo',
+          language: "ja",
+          timezone_id: "Asia/Tokyo",
           lat: 90,
           long: 135,
-          country: 'JP',
+          country: "JP",
           first_active: 1678215680,
-          last_active: 1678215682
+          last_active: 1678215682,
         },
-        identity: {external_id: user_id},
+        identity: { external_id: user_id },
         subscriptions: [
           {
-            type: 'iOSPush',
+            type: "iOSPush",
             enabled: true,
             session_time: 60,
             session_count: 1,
-            sdk: '5.0.0',
-            device_model: 'iPhone 14',
-            device_os: '16.0.0',
+            sdk: "5.0.0",
+            device_model: "iPhone 14",
+            device_os: "16.0.0",
             rooted: false,
-            app_version: '1.0.0'
+            app_version: "1.0.0",
           },
           {
-            type: 'iOSPush',
-            token: 'abcd1234',
+            type: "iOSPush",
+            token: "abcd1234",
             enabled: true,
             session_time: 60,
             session_count: 1,
-            sdk: '5.0.0',
-            device_model: 'iPhone 14',
-            device_os: '16.0.0',
+            sdk: "5.0.0",
+            device_model: "iPhone 14",
+            device_os: "16.0.0",
             rooted: false,
-            app_version: '1.0.0'
-          }
-        ]
-      })
+            app_version: "1.0.0",
+          },
+        ],
+      }),
     };
 
-    fetch('https://onesignal.com/api/v1/apps/'+import.meta.env.VITE_ONESIGNAL_APP_ID+'/users', options)
-      .then(response => response.json())
-      .then(response => {
-        setErrors([response.errors,...errors])
+    fetch(
+      "https://onesignal.com/api/v1/apps/" +
+        import.meta.env.VITE_ONESIGNAL_APP_ID +
+        "/users",
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        if(response.errors){
+          // console.log(response.errors[0])
+          setErrors([response.errors[0].title, ...errors]);
+        }
       })
-      .catch(err => console.error(err));
-  }
+      .catch((err) => console.error(err));
+  };
   const sendTestNotification = async () => {
     const options = {
       method: "POST",
@@ -195,13 +206,17 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     fetch("https://onesignal.com/api/v1/notifications", options)
       .then((response) => response.json())
       .then((response) => {
-        setErrors([response.errors,...errors])
-        setNotification(response.id)
+        if(response.errors){
+          console.error(response.errors)
+          setErrors([response.errors[0], ...errors]);
+        }
+        setNotification(response.id);
       })
       .catch((err) => console.error(err));
   };
   useEffect(() => {
     console.log("yes");
+    setErrors(["1", ...errors]);
     sendTestNotification();
   }, []);
   const getProfile = async (userId: string) => {
@@ -240,9 +255,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     console.log(errors);
   }, [errors]);
   return (
-    <AuthContext.Provider
-      value={{ user, profile, login, logout }}
-    >
+    <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
