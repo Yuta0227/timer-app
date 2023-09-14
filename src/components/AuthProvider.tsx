@@ -196,7 +196,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     fetch("https://onesignal.com/api/v1/notifications", options)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response)
         setErrors([response.errors,...errors])
         setNotification(response.id)
       })
@@ -238,7 +237,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
-  console.log(errors);
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
   return (
     <AuthContext.Provider
       value={{ user, profile, login, logout }}
