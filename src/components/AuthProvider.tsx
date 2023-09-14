@@ -92,13 +92,13 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         setUser({ id: response.data.user.id, email: response.data.user.email });
         getProfile(response.data.user.id);
         //onesignal
-        initializeOneSignal();
+        initializeOneSignal(response.data.user.id);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const initializeOneSignal = async () => {
+  const initializeOneSignal = async (user_id:string) => {
     if (oneSignalInitialized) {
       console.log("yes");
       return;
@@ -118,9 +118,59 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
     });
-    // OneSignal.login(uid);
+    addUserToOneSignal(user_id)
+
     OneSignal.Slidedown.promptPush();
   };
+  const addUserToOneSignal=async(user_id:string)=>{
+    const options = {
+      method: 'POST',
+      headers: {accept: 'application/json', 'content-type': 'application/json'},
+      body: JSON.stringify({
+        properties: {
+          // tags: {key: 'value', foo: 'bar'},
+          language: 'ja',
+          timezone_id: 'Asia/Tokyo',
+          lat: 90,
+          long: 135,
+          country: 'JP',
+          first_active: 1678215680,
+          last_active: 1678215682
+        },
+        identity: {external_id: user_id},
+        subscriptions: [
+          {
+            type: 'iOSPush',
+            enabled: true,
+            session_time: 60,
+            session_count: 1,
+            sdk: '5.0.0',
+            device_model: 'iPhone 14',
+            device_os: '16.0.0',
+            rooted: false,
+            app_version: '1.0.0'
+          },
+          {
+            type: 'iOSPush',
+            token: 'abcd1234',
+            enabled: true,
+            session_time: 60,
+            session_count: 1,
+            sdk: '5.0.0',
+            device_model: 'iPhone 14',
+            device_os: '16.0.0',
+            rooted: false,
+            app_version: '1.0.0'
+          }
+        ]
+      })
+    };
+
+    fetch('https://onesignal.com/api/v1/apps/'+import.meta.env.VITE_ONESIGNAL_APP_ID+'/users', options)
+      .then(response => response.json())
+      .then(response => console.log(response))
+      .catch(err => console.error(err));
+  }
   const sendTestNotification = async () => {
     const options = {
       method: "POST",
