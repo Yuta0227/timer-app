@@ -74,9 +74,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         } catch (error) {
           console.error(error);
         }
-      }else{
-        console.log(event);
-        OneSignal.logout();
       }
     });
     retrieveSession();
@@ -94,14 +91,15 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         setUser({ id: response.data.user.id, email: response.data.user.email });
         getProfile(response.data.user.id);
         //onesignal
-        initializeOneSignal(response.data.user.id);
+        initializeOneSignal();
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const initializeOneSignal = async (uid: string) => {
+  const initializeOneSignal = async () => {
     if (oneSignalInitialized) {
+      console.log('yes')
       return;
     }
     setOneSignalInitialized(true);
@@ -119,10 +117,33 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
     });
-    OneSignal.login(uid);
+    // OneSignal.login(uid);
     OneSignal.Slidedown.promptPush();
   };
-
+  const sendTestNotification = async () => {
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Basic '+import.meta.env.VITE_ONESIGNAL_REST_API_KEY,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        included_segments: ['Total Subscriptions'],
+        contents: {en: 'English or Any Language Message', es: 'Spanish Message'},
+        name: 'INTERNAL_CAMPAIGN_NAME',
+        app_id: import.meta.env.VITE_ONESIGNAL_APP_ID,
+      })
+    };
+    fetch('https://onesignal.com/api/v1/notifications', options)
+      .then(response => response.json())
+      .then(response => console.log(response))
+      .catch(err => console.error(err));
+  }
+  useEffect(()=>{
+      console.log('yes')
+      sendTestNotification()
+  },[])
   const getProfile = async (userId: string) => {
     try {
       const response = await supabase
