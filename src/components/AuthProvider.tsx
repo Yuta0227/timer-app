@@ -170,7 +170,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     fetch('https://onesignal.com/api/v1/apps/'+import.meta.env.VITE_ONESIGNAL_APP_ID+'/users', options)
       .then(response => response.json())
       .then(response => {
-        console.log(response)
         setErrors([response.errors,...errors])
       })
       .catch(err => console.error(err));
