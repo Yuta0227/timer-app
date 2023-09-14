@@ -1,24 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home';
-import Timer from './Timer';
-import Records from './Records';
-import Register from './components/Register';
-import Login from './components/Login';
-import Profile from './Profile';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./Home";
+import Timer from "./Timer";
+import Records from "./Records";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import Profile from "./Profile";
+import runOneSignal from "./components/OneSignal";
+import { useEffect } from "react";
 // Import other components for your routes
-export const RouterConfig:React.VFC=()=>{
-    return (
-        <Router>
-            <Routes>
-                <Route index element={<Home/>} />
-                <Route path="timer" element={<Timer/>}/>
-                <Route path="records" element={<Records/>}/>
-                <Route path="register" element={<Register/>}/>
-                <Route path="login" element={<Login/>}/>
-                <Route path="profile" element={<Profile/>}/>
-                {/* Add more routes here */}
-            </Routes>
-        </Router>
-    )
-}
+export const RouterConfig: React.VFC = () => {
+  useEffect(() => {
+    runOneSignal();
+  }, []);
+  return (
+    <Router>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="timer" element={<Timer />} />
+        <Route path="records" element={<Records />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="profile" element={<Profile />} />
+        {/* Add more routes here */}
+      </Routes>
+    </Router>
+  );
+};

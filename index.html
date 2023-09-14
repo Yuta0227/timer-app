@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -11,12 +11,12 @@
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register('./serviceWorker.js')
-            .then((reg) => console.log('サービスワーカーの登録成功', reg.scope))
-            .catch((err) => console.log('サービスワーカーの登録失敗', err));
+            .register("./serviceWorker.js")
+            .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
+            .catch((err) => console.log("サービスワーカーの登録失敗", err));
         });
       }
     </script>
