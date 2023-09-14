@@ -1,0 +1,9 @@
+{
+  "theme_color": "#f69435",
+  "background_color": "#f69435",
+  "display": "fullscreen",
+  "scope": "/",
+  "start_url": "/",
+  "name": "timer-app",
+  "short_name": "timer-app"
+}
