@@ -237,6 +237,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
+  console.log(errors);
   return (
     <AuthContext.Provider
       value={{ user, profile, login, logout }}
