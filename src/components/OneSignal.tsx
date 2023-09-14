@@ -10,6 +10,9 @@ export default async function runOneSignal() {
   }
   await OneSignal.init({
     appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
+    notifyButton:{
+        enable:true
+    },
     allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
   });
   OneSignal.Slidedown.promptPush();
