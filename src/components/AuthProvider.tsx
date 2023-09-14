@@ -6,7 +6,7 @@ import {
   ReactNode,
 } from "react";
 import supabase from "../supabase/client.tsx";
-
+import OneSignal from "react-onesignal";
 type User = {
   id: string;
   email: string;
@@ -55,7 +55,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       throw new Error("ログアウト失敗");
-    }else{
+    } else {
       setUser(null);
       setProfile(null);
       window.location.reload();
@@ -63,6 +63,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   };
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [oneSignalInitialized, setOneSignalInitialized] =
+    useState<boolean>(false);
   //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
@@ -88,11 +90,36 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       } else if (response.data.user.id && response.data.user.email) {
         setUser({ id: response.data.user.id, email: response.data.user.email });
         getProfile(response.data.user.id);
+        //onesignal
+        initializeOneSignal(response.data.user.id);
       }
     } catch (error) {
       console.error(error);
     }
   };
+  const initializeOneSignal = async (uid: string) => {
+    if (oneSignalInitialized) {
+      return;
+    }
+    setOneSignalInitialized(true);
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    let allowLocalhostAsSecureOrigin;
+    if (import.meta.env.VITE_APP_ENV === "localhost") {
+      allowLocalhostAsSecureOrigin = true;
+    } else {
+      allowLocalhostAsSecureOrigin = false;
+    }
+    await OneSignal.init({
+      appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
+      notifyButton: {
+        enable: true,
+      },
+      allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
+    });
+    OneSignal.login(uid);
+    OneSignal.Slidedown.promptPush();
+  };
+
   const getProfile = async (userId: string) => {
     try {
       const response = await supabase

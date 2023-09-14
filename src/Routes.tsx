@@ -6,13 +6,8 @@ import Records from "./Records";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Profile from "./Profile";
-import runOneSignal from "./components/OneSignal";
-import { useEffect } from "react";
 // Import other components for your routes
 export const RouterConfig: React.VFC = () => {
-  useEffect(() => {
-    runOneSignal();
-  }, []);
   return (
     <Router>
       <Routes>
