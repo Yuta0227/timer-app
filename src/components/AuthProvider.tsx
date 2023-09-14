@@ -75,6 +75,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
           console.error(error);
         }
       }else{
+        console.log(event);
         OneSignal.logout();
       }
     });
