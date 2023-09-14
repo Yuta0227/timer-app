@@ -65,6 +65,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [oneSignalInitialized, setOneSignalInitialized] =
     useState<boolean>(false);
+  const [notification, setNotification] = useState<string | null>(null);
   //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
@@ -99,7 +100,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   };
   const initializeOneSignal = async () => {
     if (oneSignalInitialized) {
-      console.log('yes')
+      console.log("yes");
       return;
     }
     setOneSignalInitialized(true);
@@ -122,28 +123,34 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   };
   const sendTestNotification = async () => {
     const options = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        accept: 'application/json',
-        Authorization: 'Basic '+import.meta.env.VITE_ONESIGNAL_REST_API_KEY,
-        'content-type': 'application/json'
+        accept: "application/json",
+        Authorization: "Basic " + import.meta.env.VITE_ONESIGNAL_REST_API_KEY,
+        "content-type": "application/json",
       },
       body: JSON.stringify({
-        included_segments: ['Total Subscriptions'],
-        contents: {en: 'English or Any Language Message', es: 'Spanish Message'},
-        name: 'INTERNAL_CAMPAIGN_NAME',
+        included_segments: ["Total Subscriptions"],
+        contents: {
+          en: "English or Any Language Message",
+          es: "Spanish Message",
+        },
+        name: "INTERNAL_CAMPAIGN_NAME",
         app_id: import.meta.env.VITE_ONESIGNAL_APP_ID,
-      })
+      }),
     };
-    fetch('https://onesignal.com/api/v1/notifications', options)
-      .then(response => response.json())
-      .then(response => console.log(response))
-      .catch(err => console.error(err));
-  }
-  useEffect(()=>{
-      console.log('yes')
-      sendTestNotification()
-  },[])
+    fetch("https://onesignal.com/api/v1/notifications", options)
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response)
+        setNotification(response.id)
+      })
+      .catch((err) => console.error(err));
+  };
+  useEffect(() => {
+    console.log("yes");
+    sendTestNotification();
+  }, []);
   const getProfile = async (userId: string) => {
     try {
       const response = await supabase
@@ -177,8 +184,11 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ user, profile, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, profile, login, logout }}
+    >
       {children}
+      <div>notification{notification}</div>
     </AuthContext.Provider>
   );
 };
