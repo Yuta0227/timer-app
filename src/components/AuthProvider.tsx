@@ -172,7 +172,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   console.log(`Device OS: ${deviceOS}`);
 
   const addUserToOneSignal = async (user_id: string,deviceModel:string,deviceOS:string) => {
-
     const options = {
       method: "POST",
       headers: {
@@ -296,7 +295,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
-  const viewOneSignalUser = async (userId: string) => {
+  const addUserIfNotSubscribedToPush = async (userId: string) => {
     const options = { method: "GET", headers: { accept: "application/json" } };
 
     fetch(
@@ -309,6 +308,10 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         console.log(response);
+        if(!response.subscriptions){
+          console.log('yes')
+          addUserToOneSignal(userId,deviceModel,deviceOS);
+        }
         console.log(OneSignal.User.PushSubscription);
         console.log(OneSignal.User.PushSubscription.token);
       })
@@ -339,11 +342,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={() => sendTestNotification("これはテスト通知")}>
         send notifications
       </button>
-      <button onClick={user ? () => addUserToOneSignal(user?.id) : () => {}}>
-        add user to onesignal
-      </button>
-      <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
-        view this onesignal user
+      <button onClick={user ? () => addUserIfNotSubscribedToPush(user?.id) : () => {}}>
+        add user if not subscribed to push
       </button>
       <button onClick={user ? () => deleteOneSignalUser(user?.id) : () => {}}>
         delete this onesignal user
