@@ -122,7 +122,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
 
     OneSignal.Slidedown.promptPush();
   };
-  
+
   // Function to extract device model and OS from user agent string
   function getDeviceInfo() {
     const userAgent = navigator.userAgent;
@@ -171,7 +171,11 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   console.log(`Device Model: ${deviceModel}`);
   console.log(`Device OS: ${deviceOS}`);
 
-  const addUserToOneSignal = async (user_id: string,deviceModel:string,deviceOS:string) => {
+  const addUserToOneSignal = async (
+    user_id: string,
+    deviceModel: string,
+    deviceOS: string
+  ) => {
     const options = {
       method: "POST",
       headers: {
@@ -308,9 +312,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         console.log(response);
-        if(!response.subscriptions){
-          console.log('yes')
-          addUserToOneSignal(userId,deviceModel,deviceOS);
+        if (!response.subscriptions) {
+          console.log("yes");
+          addUserToOneSignal(userId, deviceModel, deviceOS);
         }
         console.log(OneSignal.User.PushSubscription);
         console.log(OneSignal.User.PushSubscription.token);
@@ -334,6 +338,28 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   };
+  const [permission, setPermission] = useState<NotificationPermission>(
+    Notification.permission
+  );
+  const handleNotificationPermission = async () => {
+    const newPermission = await Notification.requestPermission();
+    setPermission(newPermission);
+  };
+  const sendNotification = () => {
+    if (permission === "granted") {
+      const notification = new Notification("Hello, World!", {
+        body: "This is a test notification.",
+      });
+
+      notification.onclick = function () {
+        // Handle notification click event
+        console.log("Notification clicked");
+      };
+    } else {
+      alert("Notification permission is required to send notifications.");
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
@@ -342,17 +368,22 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={() => sendTestNotification("これはテスト通知")}>
         send notifications
       </button>
-      <button onClick={user ? () => addUserIfNotSubscribedToPush(user?.id) : () => {}}>
+      <button
+        onClick={user ? () => addUserIfNotSubscribedToPush(user?.id) : () => {}}
+      >
         add user if not subscribed to push
       </button>
       <button onClick={user ? () => deleteOneSignalUser(user?.id) : () => {}}>
         delete this onesignal user
       </button>
       <div>token:{OneSignal.User.PushSubscription.token}</div>
-      <div>supports push{OneSignal.Notifications.isPushSupported().toString()}</div>
-      <button onClick={() => OneSignal.Notifications.requestPermission()}>
-        通知許可
+      <div>
+        supports push{OneSignal.Notifications.isPushSupported().toString()}
+      </div>
+      <button onClick={handleNotificationPermission}>
+        通知許可リクエスト
       </button>
+      <button onClick={sendNotification}>通知送信</button>
       <div>device_os{deviceOS}</div>
       <div>device_model{deviceModel}</div>
     </AuthContext.Provider>
