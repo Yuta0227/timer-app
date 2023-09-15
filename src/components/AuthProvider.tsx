@@ -194,7 +194,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        included_segments: ["Total Subscriptions"],
+        included_segments: ["test"],
         contents: {
           en: "English or Any Language Message",
           es: "Spanish Message",
