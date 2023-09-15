@@ -292,6 +292,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={user?()=>addUserToOneSignal(user?.id):()=>{}}>add user to onesignal</button>
       <button onClick={user?()=>viewOneSignalUser(user?.id):()=>{}}>view this onesignal user</button>
       <button onClick={user?()=>deleteOneSignalUser(user?.id):()=>{}}>delete this onesignal user</button>
+      <div>token:{OneSignal.User.PushSubscription.token}</div>
     </AuthContext.Provider>
   );
 };
