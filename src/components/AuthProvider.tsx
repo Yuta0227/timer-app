@@ -282,8 +282,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .catch((err) => console.error(err));
   };
   const supportsPush=OneSignal.Notifications.isPushSupported()
-  //change boolean to string
-  supportsPush
   useEffect(() => {
     // console.log(errors);
   }, [errors]);
