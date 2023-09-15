@@ -338,28 +338,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   };
-  const [permission, setPermission] = useState<NotificationPermission>(
-    Notification.permission
-  );
-  const handleNotificationPermission = async () => {
-    const newPermission = await Notification.requestPermission();
-    setPermission(newPermission);
-  };
-  const sendNotification = () => {
-    if (permission === "granted") {
-      const notification = new Notification("Hello, World!", {
-        body: "This is a test notification.",
-      });
-
-      notification.onclick = function () {
-        // Handle notification click event
-        console.log("Notification clicked");
-      };
-    } else {
-      alert("Notification permission is required to send notifications.");
-    }
-  };
-
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
@@ -380,10 +358,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <div>
         supports push{OneSignal.Notifications.isPushSupported().toString()}
       </div>
-      <button onClick={handleNotificationPermission}>
-        通知許可リクエスト
-      </button>
-      <button onClick={sendNotification}>通知送信</button>
       <div>device_os{deviceOS}</div>
       <div>device_model{deviceModel}</div>
     </AuthContext.Provider>
