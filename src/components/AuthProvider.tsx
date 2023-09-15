@@ -247,7 +247,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
-  const [token, setToken] = useState<string | null>(null);
   const viewOneSignalUser = async (userId: string) => {
     const options = { method: "GET", headers: { accept: "application/json" } };
 
@@ -263,7 +262,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         console.log(response)
         console.log(OneSignal.User.PushSubscription)
         console.log(OneSignal.User.PushSubscription.token)
-        setToken(OneSignal.User.PushSubscription.token)
       })
       .catch((err) => console.error(err));
   };
