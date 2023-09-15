@@ -316,6 +316,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
           console.log("yes");
           addUserToOneSignal(userId, deviceModel, deviceOS);
         }
+        OneSignal.login(userId)
         console.log(OneSignal.User.PushSubscription);
         console.log(OneSignal.User.PushSubscription.token);
       })
