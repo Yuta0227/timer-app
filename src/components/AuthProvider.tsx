@@ -184,6 +184,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       body: JSON.stringify({
         properties: {
+          tags:{role:'user'},
           language: "ja",
           timezone_id: "Asia/Tokyo",
           lat: 90,
