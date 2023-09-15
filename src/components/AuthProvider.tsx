@@ -178,7 +178,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log('ユーザー追加'+response)
+        console.log('ユーザー追加')
+        console.log(response)
         if (response.errors) {
           setErrors([response.errors[0].title, ...errors]);
         }
