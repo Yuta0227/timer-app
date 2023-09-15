@@ -145,6 +145,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         subscriptions: [
           {
             type: "SafariPush",
+            token:OneSignal.User.PushSubscription.token,
             enabled: true,
             session_time: 60,
             session_count: 1,
@@ -156,7 +157,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
           },
           {
             type: "ChromePush",
-            token: "abcd1234",
+            token: OneSignal.User.PushSubscription.token,
             enabled: true,
             session_time: 60,
             session_count: 1,
@@ -178,8 +179,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log('ユーザー追加')
-        console.log(response)
+        console.log("ユーザー追加");
+        console.log(response);
         if (response.errors) {
           setErrors([response.errors[0].title, ...errors]);
         }
@@ -252,6 +253,39 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
+  const viewOneSignalUser = async (userId: string) => {
+    const options = { method: "GET", headers: { accept: "application/json" } };
+
+    fetch(
+      "https://onesignal.com/api/v1/apps/" +
+        import.meta.env.VITE_ONESIGNAL_APP_ID +
+        "/users/by/external_id/" +
+        userId,
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response)
+        console.log(OneSignal.User.PushSubscription.token)
+      })
+      .catch((err) => console.error(err));
+  };
+  const deleteOneSignalUser = async (userId: string) => {
+    const options = {
+      method: "DELETE",
+      headers: { accept: "application/json" },
+    };
+
+    fetch(
+      "https://onesignal.com/api/v1/apps/" +
+        import.meta.env.VITE_ONESIGNAL_APP_ID +
+        "/users/by/external_id/"+userId,
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => console.log(response))
+      .catch((err) => console.error(err));
+  };
   useEffect(() => {
     // console.log(errors);
   }, [errors]);
@@ -260,6 +294,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
+      <button onClick={user?()=>viewOneSignalUser(user?.id):()=>{}}>view this onesignal user</button>
+      <button onClick={user?()=>deleteOneSignalUser(user?.id):()=>{}}>delete this onesignal user</button>
     </AuthContext.Provider>
   );
 };
