@@ -178,6 +178,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
+        console.log('ユーザー追加'+response)
         if (response.errors) {
           setErrors([response.errors[0].title, ...errors]);
         }
@@ -251,7 +252,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     }
   };
   useEffect(() => {
-    console.log(errors);
+    // console.log(errors);
   }, [errors]);
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
