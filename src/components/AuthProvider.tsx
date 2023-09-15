@@ -144,7 +144,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         identity: { external_id: user_id },
         subscriptions: [
           {
-            type: "iOSPush",
+            type: "SafariPush",
             enabled: true,
             session_time: 60,
             session_count: 1,
@@ -155,7 +155,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
             app_version: "1.0.0",
           },
           {
-            type: "iOSPush",
+            type: "ChromePush",
             token: "abcd1234",
             enabled: true,
             session_time: 60,
