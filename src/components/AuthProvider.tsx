@@ -66,7 +66,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   const [oneSignalInitialized, setOneSignalInitialized] =
     useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
-  const [errors, setErrors] = useState<string[]>(['1']);
+  const [errors, setErrors] = useState<string[]>([]);
   //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
@@ -178,8 +178,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        if(response.errors){
-          // console.log(response.errors[0])
+        if (response.errors) {
           setErrors([response.errors[0].title, ...errors]);
         }
       })
@@ -206,8 +205,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     fetch("https://onesignal.com/api/v1/notifications", options)
       .then((response) => response.json())
       .then((response) => {
-        if(response.errors){
-          console.error(response.errors)
+        if (response.errors) {
+          console.error(response.errors);
           setErrors([response.errors[0], ...errors]);
         }
         setNotification(response.id);
@@ -215,9 +214,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .catch((err) => console.error(err));
   };
   useEffect(() => {
-    console.log("yes");
-    setErrors(["1", ...errors]);
-    sendTestNotification();
+    sendTestNotification().then((res) => {
+      console.log(res);
+    });
   }, []);
   const getProfile = async (userId: string) => {
     try {
