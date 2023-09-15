@@ -339,6 +339,14 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   };
+  const [notificationPermission, setNotificationPermission] = useState(
+    Notification.permission
+  );
+
+  const handleNotificationPermission = async () => {
+    const newPermission = await Notification.requestPermission();
+    setNotificationPermission(newPermission);
+  };
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
@@ -361,6 +369,12 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       </div>
       <div>device_os{deviceOS}</div>
       <div>device_model{deviceModel}</div>
+      <p>Notification Permission: {notificationPermission}</p>
+      {notificationPermission === "default" && (
+        <button onClick={handleNotificationPermission}>
+          Request Notification Permission
+        </button>
+      )}
     </AuthContext.Provider>
   );
 };
