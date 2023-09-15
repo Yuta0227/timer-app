@@ -260,7 +260,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         console.log(response)
-        console.log(OneSignal.User)
+        console.log(OneSignal.User.PushSubscription)
         console.log(OneSignal.User.PushSubscription.token)
       })
       .catch((err) => console.error(err));
