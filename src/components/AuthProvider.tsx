@@ -93,13 +93,13 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         setUser({ id: response.data.user.id, email: response.data.user.email });
         getProfile(response.data.user.id);
         //onesignal
-        initializeOneSignal(response.data.user.id);
+        initializeOneSignal();
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const initializeOneSignal = async (user_id: string) => {
+  const initializeOneSignal = async () => {
     if (oneSignalInitialized) {
       console.log("yes");
       return;
@@ -119,7 +119,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       allowLocalhostAsSecureOrigin: allowLocalhostAsSecureOrigin,
     });
-    addUserToOneSignal(user_id);
 
     OneSignal.Slidedown.promptPush();
   };
@@ -187,7 +186,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  const sendTestNotification = async () => {
+  const sendTestNotification = async (notificationMessage:string) => {
     const options = {
       method: "POST",
       headers: {
@@ -198,7 +197,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       body: JSON.stringify({
         included_segments: ["test"],
         contents: {
-          en: "English or Any Language Message",
+          en: notificationMessage,
           es: "Spanish Message",
         },
         name: "INTERNAL_CAMPAIGN_NAME",
@@ -216,11 +215,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  useEffect(() => {
-    sendTestNotification().then((res) => {
-      console.log(res);
-    });
-  }, []);
   const getProfile = async (userId: string) => {
     try {
       const response = await supabase
@@ -294,6 +288,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
+      <button onClick={()=>sendTestNotification('これはテスト通知')}>send notifications</button>
+      <button onClick={user?()=>addUserToOneSignal(user?.id):()=>{}}>add user to onesignal</button>
       <button onClick={user?()=>viewOneSignalUser(user?.id):()=>{}}>view this onesignal user</button>
       <button onClick={user?()=>deleteOneSignalUser(user?.id):()=>{}}>delete this onesignal user</button>
     </AuthContext.Provider>
