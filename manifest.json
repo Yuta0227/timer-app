@@ -2,7 +2,7 @@
   "theme_color": "#f69435",
   "background_color": "#f69435",
   "display": "fullscreen",
-  "scope": "/",
+  "scope": "https://timer-app-eight-kappa.vercel.app/",
   "start_url": "https://timer-app-eight-kappa.vercel.app/",
   "name": "timer-app",
   "short_name": "timer-app"
