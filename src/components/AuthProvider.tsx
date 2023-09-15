@@ -122,7 +122,57 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
 
     OneSignal.Slidedown.promptPush();
   };
-  const addUserToOneSignal = async (user_id: string) => {
+  
+  // Function to extract device model and OS from user agent string
+  function getDeviceInfo() {
+    const userAgent = navigator.userAgent;
+    let deviceModel = "Unknown";
+    let deviceOS = "Unknown";
+
+    // Check for common device and OS patterns in the user agent string
+    if (/(iPhone|iPad)/.test(userAgent)) {
+      deviceModel = "iPhone or iPad";
+      // Extract iOS version
+      const iosVersionMatch = userAgent.match(/OS (\d+)_(\d+)_?(\d+)?/);
+      if (iosVersionMatch) {
+        deviceOS = `iOS ${iosVersionMatch[1]}.${iosVersionMatch[2]}`;
+      }
+    } else if (/Android/.test(userAgent)) {
+      deviceModel = "Android Device";
+      // Extract Android version
+      const androidVersionMatch = userAgent.match(/Android (\d+(\.\d+)?)/);
+      if (androidVersionMatch) {
+        deviceOS = `Android ${androidVersionMatch[1]}`;
+      }
+    } else if (/Windows NT/.test(userAgent)) {
+      deviceModel = "Windows PC";
+      // Extract Windows version
+      const windowsVersionMatch = userAgent.match(/Windows NT (\d+(\.\d+)?)/);
+      if (windowsVersionMatch) {
+        deviceOS = `Windows ${windowsVersionMatch[1]}`;
+      }
+    } else if (/Mac OS X/.test(userAgent)) {
+      deviceModel = "Mac";
+      // Extract macOS version
+      const macVersionMatch = userAgent.match(/Mac OS X (\d+(_\d+)*)/);
+      if (macVersionMatch) {
+        deviceOS = `macOS ${macVersionMatch[1].replace(/_/g, ".")}`;
+      }
+    } else if (/Linux/.test(userAgent)) {
+      deviceModel = "Linux PC";
+      // Extract Linux distribution/version (if available)
+      // This is more complex and may require additional regex patterns
+    }
+
+    return { deviceModel, deviceOS };
+  }
+  const { deviceModel, deviceOS } = getDeviceInfo();
+
+  console.log(`Device Model: ${deviceModel}`);
+  console.log(`Device OS: ${deviceOS}`);
+
+  const addUserToOneSignal = async (user_id: string,deviceModel:string,deviceOS:string) => {
+
     const options = {
       method: "POST",
       headers: {
@@ -131,26 +181,25 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       },
       body: JSON.stringify({
         properties: {
-          // tags: {key: 'value', foo: 'bar'},
           language: "ja",
           timezone_id: "Asia/Tokyo",
           lat: 90,
           long: 135,
           country: "JP",
-          first_active: 1678215680,
-          last_active: 1678215682,
+          first_active: Math.floor(Date.now() / 1000),
+          last_active: Math.floor(Date.now() / 1000),
         },
         identity: { external_id: user_id },
         subscriptions: [
           {
             type: "SafariPush",
-            token:OneSignal.User.PushSubscription.token,
+            token: OneSignal.User.PushSubscription.token,
             enabled: true,
             session_time: 60,
             session_count: 1,
             sdk: "5.0.0",
-            device_model: "iPhone 14",
-            device_os: "16.0.0",
+            device_model: deviceModel,
+            device_os: deviceOS,
             rooted: false,
             app_version: "1.0.0",
           },
@@ -161,8 +210,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
             session_time: 60,
             session_count: 1,
             sdk: "5.0.0",
-            device_model: "iPhone 14",
-            device_os: "16.0.0",
+            device_model: deviceModel,
+            device_os: deviceOS,
             rooted: false,
             app_version: "1.0.0",
           },
@@ -186,7 +235,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  const sendTestNotification = async (notificationMessage:string) => {
+  const sendTestNotification = async (notificationMessage: string) => {
     const options = {
       method: "POST",
       headers: {
@@ -259,9 +308,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log(response)
-        console.log(OneSignal.User.PushSubscription)
-        console.log(OneSignal.User.PushSubscription.token)
+        console.log(response);
+        console.log(OneSignal.User.PushSubscription);
+        console.log(OneSignal.User.PushSubscription.token);
       })
       .catch((err) => console.error(err));
   };
@@ -274,29 +323,38 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     fetch(
       "https://onesignal.com/api/v1/apps/" +
         import.meta.env.VITE_ONESIGNAL_APP_ID +
-        "/users/by/external_id/"+userId,
+        "/users/by/external_id/" +
+        userId,
       options
     )
       .then((response) => response.json())
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   };
-  const supportsPush=OneSignal.Notifications.isPushSupported()
-  useEffect(() => {
-    // console.log(errors);
-  }, [errors]);
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
-      <button onClick={()=>sendTestNotification('これはテスト通知')}>send notifications</button>
-      <button onClick={user?()=>addUserToOneSignal(user?.id):()=>{}}>add user to onesignal</button>
-      <button onClick={user?()=>viewOneSignalUser(user?.id):()=>{}}>view this onesignal user</button>
-      <button onClick={user?()=>deleteOneSignalUser(user?.id):()=>{}}>delete this onesignal user</button>
+      <button onClick={() => sendTestNotification("これはテスト通知")}>
+        send notifications
+      </button>
+      <button onClick={user ? () => addUserToOneSignal(user?.id) : () => {}}>
+        add user to onesignal
+      </button>
+      <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
+        view this onesignal user
+      </button>
+      <button onClick={user ? () => deleteOneSignalUser(user?.id) : () => {}}>
+        delete this onesignal user
+      </button>
       <div>token:{OneSignal.User.PushSubscription.token}</div>
-      <div>supports push{supportsPush.toString()}</div>
-      <button onClick={()=>OneSignal.Notifications.requestPermission()}>通知許可</button>
+      <div>supports push{OneSignal.Notifications.isPushSupported().toString()}</div>
+      <button onClick={() => OneSignal.Notifications.requestPermission()}>
+        通知許可
+      </button>
+      <div>device_os{deviceOS}</div>
+      <div>device_model{deviceModel}</div>
     </AuthContext.Provider>
   );
 };
