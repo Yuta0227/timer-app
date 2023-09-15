@@ -260,6 +260,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         console.log(response)
+        console.log(OneSignal.User)
         console.log(OneSignal.User.PushSubscription.token)
       })
       .catch((err) => console.error(err));
@@ -280,6 +281,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
   };
+  const supportsPush=OneSignal.Notifications.isPushSupported()
+  //change boolean to string
+  supportsPush
   useEffect(() => {
     // console.log(errors);
   }, [errors]);
@@ -293,6 +297,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={user?()=>viewOneSignalUser(user?.id):()=>{}}>view this onesignal user</button>
       <button onClick={user?()=>deleteOneSignalUser(user?.id):()=>{}}>delete this onesignal user</button>
       <div>token:{OneSignal.User.PushSubscription.token}</div>
+      <div>supports push{supportsPush.toString()}</div>
     </AuthContext.Provider>
   );
 };
