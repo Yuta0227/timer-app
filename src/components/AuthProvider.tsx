@@ -21,7 +21,6 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -56,9 +55,11 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     if (error) {
       throw new Error("ログアウト失敗");
     } else {
+      OneSignal.logout().then((response) => {
+        console.log(response);
+      });
       setUser(null);
       setProfile(null);
-      window.location.reload();
     }
   };
   const [user, setUser] = useState<User | null>(null);
@@ -69,6 +70,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   const [errors, setErrors] = useState<string[]>([]);
   //ログイン時と通常にアクセスしたときにセッション確認してセット
   useEffect(() => {
+    initializeOneSignal();
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
         try {
@@ -92,8 +94,10 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       } else if (response.data.user.id && response.data.user.email) {
         setUser({ id: response.data.user.id, email: response.data.user.email });
         getProfile(response.data.user.id);
-        //onesignal
-        initializeOneSignal();
+        //register時はエラーでない。login時はエラー出るが、気にしないでいい
+        OneSignal.login(response.data.user.id).then(() => {
+          console.log("onesignal login success");
+        });
       }
     } catch (error) {
       console.error(error);
@@ -167,78 +171,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     return { deviceModel, deviceOS };
   }
   const { deviceModel, deviceOS } = getDeviceInfo();
-
-  console.log(`Device Model: ${deviceModel}`);
-  console.log(`Device OS: ${deviceOS}`);
-
-  const addUserToOneSignal = async (
-    user_id: string,
-    deviceModel: string,
-    deviceOS: string
-  ) => {
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        properties: {
-          tags:{role:'user'},
-          language: "ja",
-          timezone_id: "Asia/Tokyo",
-          lat: 90,
-          long: 135,
-          country: "JP",
-          first_active: Math.floor(Date.now() / 1000),
-          last_active: Math.floor(Date.now() / 1000),
-        },
-        identity: { external_id: user_id },
-        subscriptions: [
-          {
-            type: "SafariPush",
-            token: OneSignal.User.PushSubscription.token,
-            enabled: true,
-            session_time: 60,
-            session_count: 1,
-            sdk: "5.0.0",
-            device_model: deviceModel,
-            device_os: deviceOS,
-            rooted: false,
-            app_version: "1.0.0",
-          },
-          {
-            type: "ChromePush",
-            token: OneSignal.User.PushSubscription.token,
-            enabled: true,
-            session_time: 60,
-            session_count: 1,
-            sdk: "5.0.0",
-            device_model: deviceModel,
-            device_os: deviceOS,
-            rooted: false,
-            app_version: "1.0.0",
-          },
-        ],
-      }),
-    };
-
-    fetch(
-      "https://onesignal.com/api/v1/apps/" +
-        import.meta.env.VITE_ONESIGNAL_APP_ID +
-        "/users",
-      options
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        console.log("ユーザー追加");
-        console.log(response);
-        if (response.errors) {
-          setErrors([response.errors[0].title, ...errors]);
-        }
-      })
-      .catch((err) => console.error(err));
-  };
   const sendTestNotification = async (notificationMessage: string) => {
     const options = {
       method: "POST",
@@ -248,7 +180,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        included_segments: ["test"],
+        included_segments: ["N/A"],
         contents: {
           en: notificationMessage,
           es: "Spanish Message",
@@ -300,7 +232,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       console.error(error);
     }
   };
-  const addUserIfNotSubscribedToPush = async (userId: string) => {
+  const viewOneSignalUser = async (userId: string) => {
     const options = { method: "GET", headers: { accept: "application/json" } };
 
     fetch(
@@ -312,14 +244,12 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
-        if (!response.subscriptions) {
-          console.log("yes");
-          addUserToOneSignal(userId, deviceModel, deviceOS);
+        if (response.errors) {
+          console.log("user does not exist");
+        } else {
+          console.log("user exists");
         }
-        OneSignal.login(userId)
-        console.log(OneSignal.User.PushSubscription);
-        console.log(OneSignal.User.PushSubscription.token);
+        console.log(response);
       })
       .catch((err) => console.error(err));
   };
@@ -356,10 +286,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={() => sendTestNotification("これはテスト通知")}>
         send notifications
       </button>
-      <button
-        onClick={user ? () => addUserIfNotSubscribedToPush(user?.id) : () => {}}
-      >
-        add user if not subscribed to push
+      <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
+        view user on console
       </button>
       <button onClick={user ? () => deleteOneSignalUser(user?.id) : () => {}}>
         delete this onesignal user
