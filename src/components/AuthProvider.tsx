@@ -126,51 +126,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
 
     OneSignal.Slidedown.promptPush();
   };
-
-  // Function to extract device model and OS from user agent string
-  function getDeviceInfo() {
-    const userAgent = navigator.userAgent;
-    let deviceModel = "Unknown";
-    let deviceOS = "Unknown";
-
-    // Check for common device and OS patterns in the user agent string
-    if (/(iPhone|iPad)/.test(userAgent)) {
-      deviceModel = "iPhone or iPad";
-      // Extract iOS version
-      const iosVersionMatch = userAgent.match(/OS (\d+)_(\d+)_?(\d+)?/);
-      if (iosVersionMatch) {
-        deviceOS = `iOS ${iosVersionMatch[1]}.${iosVersionMatch[2]}`;
-      }
-    } else if (/Android/.test(userAgent)) {
-      deviceModel = "Android Device";
-      // Extract Android version
-      const androidVersionMatch = userAgent.match(/Android (\d+(\.\d+)?)/);
-      if (androidVersionMatch) {
-        deviceOS = `Android ${androidVersionMatch[1]}`;
-      }
-    } else if (/Windows NT/.test(userAgent)) {
-      deviceModel = "Windows PC";
-      // Extract Windows version
-      const windowsVersionMatch = userAgent.match(/Windows NT (\d+(\.\d+)?)/);
-      if (windowsVersionMatch) {
-        deviceOS = `Windows ${windowsVersionMatch[1]}`;
-      }
-    } else if (/Mac OS X/.test(userAgent)) {
-      deviceModel = "Mac";
-      // Extract macOS version
-      const macVersionMatch = userAgent.match(/Mac OS X (\d+(_\d+)*)/);
-      if (macVersionMatch) {
-        deviceOS = `macOS ${macVersionMatch[1].replace(/_/g, ".")}`;
-      }
-    } else if (/Linux/.test(userAgent)) {
-      deviceModel = "Linux PC";
-      // Extract Linux distribution/version (if available)
-      // This is more complex and may require additional regex patterns
-    }
-
-    return { deviceModel, deviceOS };
-  }
-  const { deviceModel, deviceOS } = getDeviceInfo();
   const sendTestNotification = async (notificationMessage: string) => {
     const options = {
       method: "POST",
@@ -296,8 +251,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <div>
         supports push{OneSignal.Notifications.isPushSupported().toString()}
       </div>
-      <div>device_os{deviceOS}</div>
-      <div>device_model{deviceModel}</div>
       <p>Notification Permission: {notificationPermission}</p>
       {notificationPermission === "default" && (
         <button onClick={handleNotificationPermission}>
