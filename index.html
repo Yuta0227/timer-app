@@ -19,15 +19,15 @@
             .then(() => {
               navigator.serviceWorker.getRegistration().then((registration) => {
                 //タスク切らないと更新されない
-                registration.addEventListener("updatefound", () => {
-                  const installingWorker = registration.installing;
-                  alert("アプデあるか確認中");
-                  installingWorker.onstateChange = () => {
-                    if (installingWorker.state === "installed") {
-                      alert("アプデがインストールされました");
-                    }
-                  };
-                });
+                // registration.addEventListener("updatefound", () => {
+                //   const installingWorker = registration.installing;
+                //   alert("アプデあるか確認中");
+                //   installingWorker.onstateChange = () => {
+                //     if (installingWorker.state === "installed") {
+                //       alert("アプデがインストールされました");
+                //     }
+                //   };
+                // });
               });
             })
             .catch((error) => {
