@@ -14,14 +14,6 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          // navigator.serviceWorker.getRegistrations().then(function(registrations){
-          //   for(let registration of registrations) {
-          //     console.log(registration.active.scriptURL)
-          //     if(registration.active.scriptURL.includes("sw.js")){
-          //       registration.unregister()
-          //     }
-          //   }
-          // })
           navigator.serviceWorker
             .register("./OneSignalSDKWorker.js")
             .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))

@@ -126,7 +126,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
 
     OneSignal.Slidedown.promptPush();
   };
-  const sendTestNotification = async (notificationMessage: string) => {
+  const sendTestNotificationBasedOnSegments = async (notificationMessage: string) => {
     const options = {
       method: "POST",
       headers: {
@@ -238,7 +238,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
-      <button onClick={() => sendTestNotification("これはテスト通知")}>
+      <button onClick={() => sendTestNotificationBasedOnSegments("これは通知ONにしている全てのユーザーに送られるテスト通知")}>
         send notifications
       </button>
       <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
