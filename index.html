@@ -17,7 +17,8 @@
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.getRegistration().then(registration => {
             if (registration.waiting!=null) {
-              alert('インストール済みの更新があります。アプリを再起動してください。')
+              //タスク切るだけでは更新されないので、アプリホーム画面から削除して再度追加しても更新されない
+              alert('ああああインストール済みの更新があります。アプリを再起動してください。')
               disableUpdateButton()
             }else{
               registration.update().then(registration=>{
