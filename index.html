@@ -14,10 +14,17 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("./serviceWorker.js")
-            .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
-            .catch((err) => console.log("サービスワーカーの登録失敗", err));
+          navigator.serviceWorker.getRegistrations().then(function(registrations){
+            for(let registration of registrations) {
+              if(registration.active.scriptURL.includes("sw.js")){
+                registration.unregister()
+              }
+            }
+          })
+          // navigator.serviceWorker
+          //   .register("./serviceWorker.js")
+          //   .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
+          //   .catch((err) => console.log("サービスワーカーの登録失敗", err));
         });
       }
     </script>
