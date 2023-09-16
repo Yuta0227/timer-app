@@ -9,16 +9,45 @@
   </head>
   <body>
     <div id="root"></div>
+    <button id="update_version_button" onclick="reload">アップデートする</button>
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
-      if ("serviceWorker" in navigator) {
+      function reload(){
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration.waiting!=null) {
+              alert('インストール済みの更新があります。アプリを再起動してください。')
+              disableUpdateButton()
+            }else{
+              registration.update().then(registration=>{
+                const installingWorker=registration.installing;
+                if(installingWorker!=null){
+                  installingWorker.onstatechange=e=>{
+                    if(e.target.state=='installed'){
+                      alert('更新しました。アプリを再起動してください。')
+                      disableUpdateButton()
+                    }
+                  }
+                }
+              })
+            }
+          })
+        }
+      }
+      if("serviceWorker" in navigator){
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./OneSignalSDKWorker.js")
-            .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
-            .catch((err) => console.log("サービスワーカーの登録失敗", err));
+          .register("./OneSignalSDKWorker.js")
+          .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
+          .catch((err) => console.log("サービスワーカーの登録失敗", err));
         });
+      }
+      function disableUpdateButton(){
+        const button=document.getElementById('update_version_button')
+        if(button!=null){
+          button.disabled=true
+        }
       }
     </script>
   </body>
