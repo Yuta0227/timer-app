@@ -9,33 +9,23 @@
   </head>
   <body>
     <div id="root"></div>
-    <div>a</div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
       window.addEventListener("load", () => {
+        alert(navigator.platform)
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker
             .register("./OneSignalSDKWorker.js")
             .then(() => {
-              navigator.serviceWorker.getRegistration().then((registration) => {
-                //タスク切らないと更新されない
-                // registration.addEventListener("updatefound", () => {
-                //   const installingWorker = registration.installing;
-                //   alert("アプデあるか確認中");
-                //   installingWorker.onstateChange = () => {
-                //     if (installingWorker.state === "installed") {
-                //       alert("アプデがインストールされました");
-                //     }
-                //   };
-                // });
-              });
+              navigator.serviceWorker.getRegistration()
             })
             .catch((error) => {
-              alert("サービスワーカーの登録に失敗しました" + error);
+              alert("アプデに失敗しました" + error);
             });
         } else {
-          alert("サービスワーカーが使えません");
+          //get device os
+          alert("このアプリは何らかの理由で使えません");
         }
       });
     </script>
