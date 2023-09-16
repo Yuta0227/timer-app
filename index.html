@@ -12,30 +12,33 @@
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("./OneSignalSDKWorker.js")
-          .then((registration) => {
-            //タスク切らないと更新されない
-            registration.addEventListener("updatefound", () => {
-              const installingWorker = registration.installing;
-              alert(
-                "新しいサービスワーカーをインストールしてる" + installingWorker
-              );
+      window.addEventListener("load", () => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("./OneSignalSDKWorker.js")
+            .then((registration) => {
+              //タスク切らないと更新されない
+              registration.addEventListener("updatefound", () => {
+                const installingWorker = registration.installing;
+                alert(
+                  "新しいサービスワーカーをインストールしてる" +
+                    installingWorker
+                );
+              });
+              installingWorker.onstateChange = () => {
+                alert("新しいサービスワーカーの状態" + installingWorker.state);
+                if (installingWorker.state === "installed") {
+                  alert("新しいサービスワーカーがインストールされました");
+                }
+              };
+            })
+            .catch((error) => {
+              alert("サービスワーカーの登録に失敗しました" + error);
             });
-            installingWorker.onstateChange = () => {
-              alert("新しいサービスワーカーの状態" + installingWorker.state);
-              if (installingWorker.state === "installed") {
-                alert("新しいサービスワーカーがインストールされました");
-              }
-            };
-          })
-          .catch((error) => {
-            alert("サービスワーカーの登録に失敗しました" + error);
-          });
-      } else {
-        alert("サービスワーカーが使えません");
-      }
+        } else {
+          alert("サービスワーカーが使えません");
+        }
+      });
     </script>
   </body>
 </html>
