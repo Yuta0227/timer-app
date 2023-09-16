@@ -21,16 +21,10 @@
                 //タスク切らないと更新されない
                 registration.addEventListener("updatefound", () => {
                   const installingWorker = registration.installing;
-                  alert(
-                    "新しいサービスワーカーをインストールしてる" +
-                      installingWorker
-                  );
+                  alert("アプデあるか確認中");
                   installingWorker.onstateChange = () => {
-                    alert(
-                      "新しいサービスワーカーの状態" + installingWorker.state
-                    );
                     if (installingWorker.state === "installed") {
-                      alert("新しいサービスワーカーがインストールされました");
+                      alert("アプデがインストールされました");
                     }
                   };
                 });
