@@ -9,51 +9,27 @@
   </head>
   <body>
     <div id="root"></div>
-    <button id="update_version_button" onclick="reload()">アップデートする</button>
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
-      function reload(){
         if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.getRegistration().then(registration => {
-            // if (registration.waiting!=null) {
-            //   //タスク切るだけで更新される
-            //   //更新がなくても再起動するとこのalertがでる
-            //   alert('ああああインストール済みの更新があります。アプリを再起動してください。')
-            //   disableUpdateButton()
-            // }else{
-              registration.update().then(registration=>{
+          navigator.serviceWorker.register("./OneSignalSDKWorker.js").then(registration => {
+              //タスク切らないと更新されない
+              registration.addEventListener("updatefound",()=>{
                 const installingWorker=registration.installing;
-                if(installingWorker!=null){
-                  installingWorker.onstatechange=e=>{
-                    if(e.target.state=='installed'){
-                      alert('更新しました。アプリを再起動してください')
-                      disableUpdateButton()
-                    }
-                  }
-                }
-                else{
-                  alert('更新はないよ。')
-                }
+                alert('新しいサービスワーカーをインストールしてる'+installingWorker)
               })
-            // }
+              installingWorker.onstateChange=()=>{
+                if(installingWorker.state==='installed'){
+                  alert('新しいサービスワーカーがインストールされました')
+                }
+              }
+          }).catch(error=>{
+            alert('サービスワーカーの登録に失敗しました'+error)
           })
+        }else{
+          alert('サービスワーカーが使えません')
         }
-      }
-      if("serviceWorker" in navigator){
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-          .register("./OneSignalSDKWorker.js")
-          .then((reg) => console.log("サービスワーカーの登録成功", reg.scope))
-          .catch((err) => console.log("サービスワーカーの登録失敗", err));
-        });
-      }
-      function disableUpdateButton(){
-        const button=document.getElementById('update_version_button')
-        if(button!=null){
-          button.disabled=true
-        }
-      }
     </script>
   </body>
 </html>
