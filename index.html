@@ -16,7 +16,8 @@
         window.addEventListener("load", () => {
           navigator.serviceWorker.getRegistrations().then(function(registrations){
             for(let registration of registrations) {
-              if(registration.active.scriptURL.includes("sw.js")){
+              console.log(registration.active.scriptURL)
+              if(registration.active.scriptURL.includes("serviceWorker.js")){
                 registration.unregister()
               }
             }
