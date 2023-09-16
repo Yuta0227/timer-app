@@ -16,11 +16,12 @@
       function reload(){
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.getRegistration().then(registration => {
-            if (registration.waiting!=null) {
-              //タスク切るだけでは更新されないので、アプリホーム画面から削除して再度追加しても更新されない
-              alert('ああああインストール済みの更新があります。アプリを再起動してください。')
-              disableUpdateButton()
-            }else{
+            // if (registration.waiting!=null) {
+            //   //タスク切るだけで更新される
+            //   //更新がなくても再起動するとこのalertがでる
+            //   alert('ああああインストール済みの更新があります。アプリを再起動してください。')
+            //   disableUpdateButton()
+            // }else{
               registration.update().then(registration=>{
                 const installingWorker=registration.installing;
                 if(installingWorker!=null){
@@ -28,14 +29,15 @@
                     if(e.target.state=='installed'){
                       alert('更新しました。アプリを再起動してください')
                       disableUpdateButton()
-                    }else{
-                      alert('更新はありませんでした。')
                     }
                   }
                 }
+                else{
+                  alert('更新はありませんでした。')
+                }
               })
-            }
-          })
+            // }
+          // })
         }
       }
       if("serviceWorker" in navigator){
