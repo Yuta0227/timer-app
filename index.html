@@ -25,14 +25,16 @@
                     "新しいサービスワーカーをインストールしてる" +
                       installingWorker
                   );
+                  installingWorker.onstateChange = () => {
+                    alert(
+                      "新しいサービスワーカーの状態" + installingWorker.state
+                    );
+                    if (installingWorker.state === "installed") {
+                      alert("新しいサービスワーカーがインストールされました");
+                    }
+                  };
                 });
               });
-              installingWorker.onstateChange = () => {
-                alert("新しいサービスワーカーの状態" + installingWorker.state);
-                if (installingWorker.state === "installed") {
-                  alert("新しいサービスワーカーがインストールされました");
-                }
-              };
             })
             .catch((error) => {
               alert("サービスワーカーの登録に失敗しました" + error);
