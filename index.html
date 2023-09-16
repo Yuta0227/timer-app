@@ -16,14 +16,16 @@
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker
             .register("./OneSignalSDKWorker.js")
-            .then((registration) => {
-              //タスク切らないと更新されない
-              registration.addEventListener("updatefound", () => {
-                const installingWorker = registration.installing;
-                alert(
-                  "新しいサービスワーカーをインストールしてる" +
-                    installingWorker
-                );
+            .then(() => {
+              navigator.serviceWorker.getRegistration().then((registration) => {
+                //タスク切らないと更新されない
+                registration.addEventListener("updatefound", () => {
+                  const installingWorker = registration.installing;
+                  alert(
+                    "新しいサービスワーカーをインストールしてる" +
+                      installingWorker
+                  );
+                });
               });
               installingWorker.onstateChange = () => {
                 alert("新しいサービスワーカーの状態" + installingWorker.state);
