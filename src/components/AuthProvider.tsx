@@ -210,14 +210,25 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  const [notificationPermission, setNotificationPermission] = useState(
-    Notification.permission
-  );
-
+  const [notificationPermission, setNotificationPermission] = useState<boolean|null>(null)
   const handleNotificationPermission = async () => {
-    const newPermission = await Notification.requestPermission();
-    setNotificationPermission(newPermission);
+    if(OneSignal.User.PushSubscription.optedIn){
+      OneSignal.User.PushSubscription.optOut()
+      console.log('opted out');
+      setNotificationPermission(false)
+    }else{
+      OneSignal.User.PushSubscription.optIn();
+      console.log('opted in');
+      setNotificationPermission(true)
+    }
   };
+  useEffect(()=>{
+    if(OneSignal.User.PushSubscription.optedIn){
+      setNotificationPermission(true)
+    }else{
+      setNotificationPermission(false)
+    }
+  },[])
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
@@ -236,12 +247,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         コンソールでユーザーの存在を確認
       </button>
       <div>トークンの有無:{typeof OneSignal.User.PushSubscription.token}</div>
-      <div>
-        通知可能状態:{OneSignal.Notifications.isPushSupported().toString()}
-      </div>
-      <p>Notification Permission: {notificationPermission}</p>
       <button onClick={handleNotificationPermission}>
-        通知許可設定を変更する
+        {notificationPermission?'通知を許可しない':'通知を許可する'}
       </button>
     </AuthContext.Provider>
   );
