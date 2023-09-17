@@ -88,7 +88,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
     //check whether device supports onesignal push
     console.log(OneSignal.Notifications.isPushSupported().toString());
     if(!OneSignal.Notifications.isPushSupported()){
-      alert("このデバイスは通知に対応していません。")
+      alert("iOS16.6未満は通知に対応していません。")
     }
     return () => {
       data.subscription.unsubscribe();
