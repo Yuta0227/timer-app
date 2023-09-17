@@ -232,8 +232,8 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
-      <div>notification{notification}</div>
-      <div>errors{errors}</div>
+      <div>通知{notification?'送信完了':''}</div>
+      <div>エラー{errors}</div>
       <button
         onClick={() =>
           sendTestNotificationBasedOnSegments(
@@ -241,7 +241,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
           )
         }
       >
-        send notifications
+        通知送信する
       </button>
       <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
         コンソールでユーザーの存在を確認
