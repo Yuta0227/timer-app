@@ -13,12 +13,13 @@
     <!-- PWA -->
     <script>
       window.addEventListener("load", () => {
+        //reload
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker
-            .register("./OneSignalSDKWorker.js")
-            .then(() => {
-              navigator.serviceWorker.getRegistration()
-            })
+          .register("./OneSignalSDKWorker.js")
+          .then(() => {
+            navigator.serviceWorker.getRegistration()
+          })
         } else {
           alert("ios 16.4未満だとこのアプリは使えません");
         }
