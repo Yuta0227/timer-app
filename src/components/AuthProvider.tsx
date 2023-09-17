@@ -10,6 +10,7 @@ import OneSignal from "react-onesignal";
 type User = {
   id: string;
   email: string;
+  userRole:string;
 };
 type Profile = {
   name: string;
@@ -49,7 +50,11 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       throw error;
     }
   };
-
+  const get_my_claims=async()=>{
+    const { data, error } = await supabase
+    .rpc('get_my_claims', {});
+    return { data, error };
+  }
   const logout = async (): Promise<void> => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -92,7 +97,10 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
         console.log(response.error);
         return;
       } else if (response.data.user.id && response.data.user.email) {
-        setUser({ id: response.data.user.id, email: response.data.user.email });
+        const res=await get_my_claims()
+        //user_roleがない場合はuser_roleをuserにする
+        const userRole=res.data.user_role?res.data.user_role:'user'
+        setUser({ id: response.data.user.id, email: response.data.user.email,userRole:userRole });
         getProfile(response.data.user.id);
         //register時はエラーでない。login時はエラー出るが、気にしないでいい
         OneSignal.login(response.data.user.id).then(() => {

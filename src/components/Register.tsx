@@ -41,9 +41,11 @@ const Register = () => {
         setLoading(false);
         return;
       }else{
-        insertEmptyProfile(res.data?.user?.id)
-        navigate("/");
-        setMsg("Registration Successful");
+        if(res.data.user){
+          insertEmptyProfile(res.data.user.id)
+          navigate("/");
+          setMsg("Registration Successful");
+        }
       }
     })
     setLoading(false);
