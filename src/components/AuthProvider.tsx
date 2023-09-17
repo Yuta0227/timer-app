@@ -126,7 +126,9 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
 
     OneSignal.Slidedown.promptPush();
   };
-  const sendTestNotificationBasedOnSegments = async (notificationMessage: string) => {
+  const sendTestNotificationBasedOnSegments = async (
+    notificationMessage: string
+  ) => {
     const options = {
       method: "POST",
       headers: {
@@ -221,22 +223,26 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       {children}
       <div>notification{notification}</div>
       <div>errors{errors}</div>
-      <button onClick={() => sendTestNotificationBasedOnSegments("これは通知ONにしている全てのユーザーに送られるテスト通知")}>
+      <button
+        onClick={() =>
+          sendTestNotificationBasedOnSegments(
+            "これは通知ONにしている全てのユーザーに送られるテスト通知"
+          )
+        }
+      >
         send notifications
       </button>
       <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
-        view user on console
+        コンソールでユーザーの存在を確認
       </button>
-      <div>token:{typeof(OneSignal.User.PushSubscription.token)}</div>
+      <div>トークンの有無:{typeof OneSignal.User.PushSubscription.token}</div>
       <div>
-        supports push{OneSignal.Notifications.isPushSupported().toString()}
+        通知可能状態:{OneSignal.Notifications.isPushSupported().toString()}
       </div>
       <p>Notification Permission: {notificationPermission}</p>
-      {notificationPermission === "default" && (
-        <button onClick={handleNotificationPermission}>
-          Request Notification Permission
-        </button>
-      )}
+      <button onClick={handleNotificationPermission}>
+        通知許可設定を変更する
+      </button>
     </AuthContext.Provider>
   );
 };
