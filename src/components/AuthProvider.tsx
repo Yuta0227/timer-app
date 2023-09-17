@@ -227,6 +227,11 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       alert('通知許可にしました。');
     }
   };
+  useEffect(()=>{
+    if(!OneSignal.User.PushSubscription.token){
+      alert('iOS16.4以上ではないと通知機能が使えません。')
+    }
+  },[])
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
