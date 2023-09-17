@@ -218,25 +218,15 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  const [notificationPermission, setNotificationPermission] = useState<boolean|null>(null)
   const handleNotificationPermission = async () => {
     if(OneSignal.User.PushSubscription.optedIn){
       OneSignal.User.PushSubscription.optOut()
-      console.log('opted out');
-      setNotificationPermission(false)
+      alert('通知無許可にしました。');
     }else{
       OneSignal.User.PushSubscription.optIn();
-      console.log('opted in');
-      setNotificationPermission(true)
+      alert('通知許可にしました。');
     }
   };
-  useEffect(()=>{
-    if(OneSignal.User.PushSubscription.optedIn){
-      setNotificationPermission(true)
-    }else{
-      setNotificationPermission(false)
-    }
-  },[])
   return (
     <AuthContext.Provider value={{ user, profile, login, logout }}>
       {children}
@@ -256,7 +246,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       </button>
       <div>トークンの有無:{OneSignal.User.PushSubscription.token?'有':'無'}</div>
       <button onClick={handleNotificationPermission}>
-        {notificationPermission?'通知を許可しない':'通知を許可する'}
+        通知許可を変更する
       </button>
     </AuthContext.Provider>
   );
