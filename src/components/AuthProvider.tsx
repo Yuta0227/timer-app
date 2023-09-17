@@ -246,7 +246,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
         コンソールでユーザーの存在を確認
       </button>
-      <div>トークンの有無:{typeof OneSignal.User.PushSubscription.token}</div>
+      <div>トークンの有無:{OneSignal.User.PushSubscription.token?'有':'無'}</div>
       <button onClick={handleNotificationPermission}>
         {notificationPermission?'通知を許可しない':'通知を許可する'}
       </button>
