@@ -208,23 +208,6 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       })
       .catch((err) => console.error(err));
   };
-  const deleteOneSignalUser = async (userId: string) => {
-    const options = {
-      method: "DELETE",
-      headers: { accept: "application/json" },
-    };
-
-    fetch(
-      "https://onesignal.com/api/v1/apps/" +
-        import.meta.env.VITE_ONESIGNAL_APP_ID +
-        "/users/by/external_id/" +
-        userId,
-      options
-    )
-      .then((response) => response.json())
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
-  };
   const [notificationPermission, setNotificationPermission] = useState(
     Notification.permission
   );
@@ -244,10 +227,7 @@ const AuthProvider: React.FC<MyComponentProps> = ({ children }) => {
       <button onClick={user ? () => viewOneSignalUser(user?.id) : () => {}}>
         view user on console
       </button>
-      <button onClick={user ? () => deleteOneSignalUser(user?.id) : () => {}}>
-        delete this onesignal user
-      </button>
-      <div>token:{OneSignal.User.PushSubscription.token}</div>
+      <div>token:{typeof(OneSignal.User.PushSubscription.token)}</div>
       <div>
         supports push{OneSignal.Notifications.isPushSupported().toString()}
       </div>
