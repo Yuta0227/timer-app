@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./components/AuthProvider.tsx";
 import supabase from "./supabase/client";
 import { formatTime } from "./components/TimeUtils";
+import Records from "./Records.tsx";
 
 function Timer() {
   const navigate = useNavigate();
@@ -142,6 +143,7 @@ function Timer() {
         ""
       )}
       <div>{showLaps()}</div>
+      <Records />
       <Link to="/" state={{ from: "/timer" }}>
         戻る
       </Link>
