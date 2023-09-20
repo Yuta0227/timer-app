@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <button id="installBtn" onclick="installer()" disabled>Install PWA</button>
+    <!-- <button id="installBtn" onclick="installer()" disabled>Install PWA</button> -->
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
@@ -21,28 +21,32 @@
               navigator.serviceWorker.getRegistration();
             });
         }
+        async function getRelatedApps(){
+          const relatedApps=await navigator.getInstalledRelatedApps();
+          console.log(relatedApps);
+        }
       });
 
-      var beforeInstallPrompt = null;
+      // var beforeInstallPrompt = null;
 
-      window.addEventListener(
-        "beforeinstallprompt",
-        eventHandler,
-        errorHandler
-      );
+      // window.addEventListener(
+      //   "beforeinstallprompt",
+      //   eventHandler,
+      //   errorHandler
+      // );
 
-      function eventHandler(event) {
-        beforeInstallPrompt = event;
-        document.getElementById("installBtn").removeAttribute("disabled");
-      }
+      // function eventHandler(event) {
+      //   beforeInstallPrompt = event;
+      //   document.getElementById("installBtn").removeAttribute("disabled");
+      // }
 
-      function errorHandler(event) {
-        console.log("error: " + event);
-      }
+      // function errorHandler(event) {
+      //   console.log("error: " + event);
+      // }
 
-      function installer() {
-        if (beforeInstallPrompt) beforeInstallPrompt.prompt();
-      }
+      // function installer() {
+      //   if (beforeInstallPrompt) beforeInstallPrompt.prompt();
+      // }
     </script>
   </body>
 </html>
