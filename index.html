@@ -9,18 +9,40 @@
   </head>
   <body>
     <div id="root"></div>
+    <button id="installBtn" onclick="installer()" disabled>Install PWA</button>
     <script type="module" src="/src/main.tsx"></script>
     <!-- PWA -->
     <script>
       window.addEventListener("load", () => {
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker
-          .register("./OneSignalSDKWorker.js")
-          .then(() => {
-            navigator.serviceWorker.getRegistration()
-          })
+            .register("./OneSignalSDKWorker.js")
+            .then(() => {
+              navigator.serviceWorker.getRegistration();
+            });
         }
       });
+
+      var beforeInstallPrompt = null;
+
+      window.addEventListener(
+        "beforeinstallprompt",
+        eventHandler,
+        errorHandler
+      );
+
+      function eventHandler(event) {
+        beforeInstallPrompt = event;
+        document.getElementById("installBtn").removeAttribute("disabled");
+      }
+
+      function errorHandler(event) {
+        console.log("error: " + event);
+      }
+
+      function installer() {
+        if (beforeInstallPrompt) beforeInstallPrompt.prompt();
+      }
     </script>
   </body>
 </html>
