@@ -7,7 +7,7 @@ type Record = {
   name: string;
   user_id: string;
   id: number;
-  time: number;
+  time: string;
 };
 type UserData = {
   name: string;
@@ -44,7 +44,9 @@ function Records() {
 
           // Create a new object that includes the user's name
           return {
-            ...record,
+            id: record.id,
+            time: formatTime(record.time),
+            user_id: record.user_id,
             name: userData?.name,
           };
         })
