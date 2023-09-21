@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import supabase from "./supabase/client";
+import supabase from "../api/CreateSupabaseClient";
 import { formatTime } from "./components/TimeUtils";
 import { useAuth } from "./components/AuthProvider";
 type Record = {

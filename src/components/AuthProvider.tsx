@@ -5,7 +5,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import supabase from "../supabase/client.tsx";
+import supabase from "../../api/CreateSupabaseClient.tsx";
 import OneSignal from "react-onesignal";
 type User = {
   id: string;

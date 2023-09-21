@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import "./custom.d.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./components/AuthProvider.tsx";
-import supabase from "./supabase/client";
+import supabase from "../api/CreateSupabaseClient.tsx";
 import { formatTime } from "./components/TimeUtils";
 import Records from "./Records.tsx";
 
